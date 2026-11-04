@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AirGuard 3D – Air Pollution Monitoring &amp; Awareness</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07121f;--bg2:#0c1d2e;--card:rgba(255,255,255,.06);--bd:rgba(120,230,255,.18);--tx:#e8f4f8;--mut:#9db6c2;--cy:#3fe0ff;--gr:#3ddc97;--or:#ff9f43;--rd:#ff5d6c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f2f8f7;--bg2:#e3f0ee;--card:rgba(255,255,255,.8);--bd:rgba(10,90,110,.2);--tx:#0c2230;--mut:#4a6672;--cy:#0a7d99;--gr:#12804f;--or:#b85c00;--rd:#c8283a}}
+:root[data-theme="light"]{--bg:#f2f8f7;--bg2:#e3f0ee;--card:rgba(255,255,255,.8);--bd:rgba(10,90,110,.2);--tx:#0c2230;--mut:#4a6672;--cy:#0a7d99;--gr:#12804f;--or:#b85c00;--rd:#c8283a}
+:root[data-theme="dark"]{--bg:#07121f;--bg2:#0c1d2e}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:Sora,system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+a{color:var(--cy)}:focus-visible{outline:2px solid var(--or);outline-offset:2px}
+#prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cy),var(--gr),var(--or));width:0;z-index:50}
+nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;gap:1rem;padding:calc(.7rem + env(safe-area-inset-top,0px)) 1.2rem .7rem;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd)}
+nav b{font-family:Sora;margin-right:auto;white-space:nowrap}
+nav .links{display:flex;gap:.2rem;flex-wrap:wrap}
+nav .links a{padding:.3rem .6rem;border-radius:8px;text-decoration:none;color:var(--mut);font-size:.88rem}
+nav .links a.on,nav .links a:hover{color:var(--tx);background:var(--card)}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:.55rem 1rem;border-radius:10px;text-decoration:none;display:inline-block}
+.pri{background:linear-gradient(135deg,var(--cy),var(--gr));color:#04121a;border:0;font-weight:600}
+.alt{border-color:var(--or);color:var(--or)}
+#menu{display:none}
+@media(max-width:900px){#menu{display:block}nav .links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--bg2);padding:.6rem 1rem}nav .links.open{display:flex}}
+section{padding:5rem 1.2rem;max-width:1150px;margin:auto}
+.full{max-width:none;background:var(--bg2)}.full>.in{max-width:1150px;margin:auto}
+#hero{position:relative;min-height:100vh;max-width:none;display:grid;align-items:center;overflow:hidden;background:radial-gradient(circle at 70% 40%,#0f3a4a,var(--bg) 65%)}
+#c3d{position:absolute;inset:0;width:100%;height:100%}
+.hero-in{position:relative;max-width:1150px;margin:auto;width:100%;padding:6rem 1.2rem 3rem;pointer-events:none}
+.hero-in>*{pointer-events:auto}
+h1{font-size:clamp(2.2rem,6vw,4.4rem);max-width:12em;font-weight:800}
+.sub{max-width:34em;color:var(--mut);font-size:1.15rem}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:.8rem 1.1rem;backdrop-filter:blur(8px)}
+.stat b{font:800 1.7rem Sora;color:var(--cy);display:block}.stat small{color:var(--mut)}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1.2rem;backdrop-filter:blur(8px);transition:transform .25s,border-color .25s}
+.card:hover{transform:translateY(-4px);border-color:var(--cy)}
+.card .ic{font-size:2rem}.card p{color:var(--mut);margin:.3rem 0}
+.card details summary{cursor:pointer;color:var(--cy);margin-top:.4rem}
+.tag{display:inline-block;font-size:.78rem;padding:.1rem .6rem;border-radius:99px;border:1px solid var(--or);color:var(--or)}
+.note{color:var(--mut);font-size:.88rem}
+select,input,textarea{font:inherit;width:100%;padding:.6rem .8rem;border-radius:10px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx)}
+label{display:block;margin:.7rem 0 .2rem;font-size:.9rem;color:var(--mut)}
+.dash{display:grid;gap:1rem;grid-template-columns:1fr 1.6fr}@media(max-width:800px){.dash{grid-template-columns:1fr}}
+.aqi{text-align:center}.aqi .n{font:800 4.2rem Sora;line-height:1}.aqi .l{font-weight:600}
+.pol{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem}
+.pol div{background:var(--bg2);border-radius:10px;padding:.5rem;text-align:center;font-size:.85rem}.pol b{display:block;font-size:1.1rem}
+.chartbox{position:relative;height:280px}
+.map{position:relative;background:var(--bg2);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.map svg{width:100%;height:auto;display:block}.map circle{cursor:pointer;transition:r .2s}.map circle:hover{r:13}
+#pop{margin:1rem;padding:.8rem 1rem;border-radius:12px;background:var(--card);border:1px solid var(--bd)}
+.leg{display:flex;gap:.8rem;flex-wrap:wrap;padding:0 1rem 1rem;font-size:.82rem;color:var(--mut)}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem}
+.chat{max-width:720px;margin:auto}
+#log{height:320px;overflow:auto;padding:1rem;background:var(--bg2);border:1px solid var(--bd);border-radius:14px;display:flex;flex-direction:column;gap:.6rem}
+.m{max-width:85%;padding:.5rem .8rem;border-radius:12px}.m.b{background:var(--card);border:1px solid var(--bd)}.m.u{align-self:flex-end;background:var(--cy);color:#04121a}
+.q{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}.q button{font-size:.85rem;padding:.35rem .7rem}
+.row{display:flex;gap:.6rem}.row input{flex:1}
+.bar{height:14px;border-radius:99px;background:var(--bg2);overflow:hidden;margin:.5rem 0}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gr),var(--or),var(--rd));transition:width 1s}
+.two{display:grid;gap:2rem;grid-template-columns:1fr 1fr}@media(max-width:800px){.two{grid-template-columns:1fr}}
+#toast{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--gr);color:#04121a;padding:.6rem 1.2rem;border-radius:10px;opacity:0;transition:opacity .3s;z-index:60;pointer-events:none}
+#top{position:fixed;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));z-index:40;display:none}
+#wa{position:fixed;left:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));z-index:40;background:#25d366;color:#04210f;font-weight:600;text-decoration:none;padding:.65rem 1.1rem;border-radius:99px;box-shadow:0 4px 16px rgba(0,0,0,.35)}#wa:hover{filter:brightness(1.08)}#mic.on{background:var(--or);color:#04121a}#hi{position:fixed;left:1rem;bottom:calc(4.6rem + env(safe-area-inset-bottom,0px));z-index:40;display:none;background:var(--bg2);color:var(--tx);border:1px solid var(--cy);padding:.6rem .9rem;border-radius:14px;text-decoration:none;max-width:240px;font-size:.9rem}
+footer{background:var(--bg2);border-top:1px solid var(--bd);padding:3rem 1.2rem 2rem}
+footer .g{max-width:1150px;margin:auto;display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+footer a{display:block;color:var(--mut);text-decoration:none;margin:.2rem 0}footer h3{font-size:1rem}
+.fin{text-align:center;margin-top:2rem;color:var(--gr);font-family:Sora}
+.slogan{font:600 1.05rem Sora;color:var(--or);margin:0 0 .6rem}
+.est{max-width:520px;margin-top:1.5rem;padding:1rem 1.2rem}
+.est h3{font-size:1.05rem;margin-bottom:.2rem}
+.est .res{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.8rem}
+.est .res div{background:var(--bg2);border-radius:10px;padding:.5rem;text-align:center;font-size:.8rem;color:var(--mut)}
+.est .res b{display:block;font:800 1.15rem Sora;color:var(--cy)}
+input[type=range]{padding:0;height:28px;accent-color:var(--cy)}
+.ticker{overflow:hidden;white-space:nowrap;border-block:1px solid var(--bd);background:var(--bg2);padding:.7rem 0;font:600 .95rem Sora;color:var(--mut)}
+.ticker span{display:inline-block;padding-left:100%;animation:tk 45s linear infinite}
+@keyframes tk{to{transform:translateX(-100%)}}
+.aud{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.aud .card{cursor:pointer;text-align:left;font:inherit;color:var(--tx)}
+.aud .card b{font:700 1.05rem Sora;display:block;margin:.3rem 0}
+.aud .card.sel{border-color:var(--cy);box-shadow:0 0 0 2px color-mix(in srgb,var(--cy) 35%,transparent)}
+#audOut{margin-top:1rem}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));counter-reset:s}
+.steps li{counter-increment:s;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1.2rem;position:relative}
+.steps li::before{content:counter(s,decimal-leading-zero);font:800 1.8rem Sora;color:var(--cy);display:block}
+.steps h3{font-size:1.05rem}.steps p{margin:0;color:var(--mut)}
+.faq details{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:.8rem 1rem;margin-bottom:.6rem}
+.faq summary{cursor:pointer;font-weight:600}.faq p{color:var(--mut);margin:.5rem 0 0}
+.consent{display:flex;gap:.5rem;align-items:flex-start;margin:.8rem 0;font-size:.85rem;color:var(--mut)}
+.consent input{width:auto;margin-top:.25rem}
+#cta{position:fixed;right:1rem;bottom:calc(4.2rem + env(safe-area-inset-bottom,0px));z-index:40;display:none;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+@media(max-width:600px){.est .res{grid-template-columns:1fr}}
+.qlb.on{border-color:var(--cy);background:var(--cy);color:#04121a;font-weight:600}
+#qtext{font:600 1.2rem Sora,system-ui,sans-serif;margin:.8rem 0;line-height:1.4}
+.qo{display:block;width:100%;text-align:left;margin:.5rem 0}
+.qo.ok{border-color:var(--gr);background:color-mix(in srgb,var(--gr) 22%,transparent)}
+.qo.no{border-color:var(--rd);background:color-mix(in srgb,var(--rd) 22%,transparent)}
+.qo:disabled{cursor:default;opacity:1;color:var(--tx)}
+#qfb{margin:.8rem 0;min-height:1.5rem}
+.qwrap{max-width:760px;margin:auto}
+.g3box canvas{width:100%;height:460px;display:block;touch-action:pan-y;cursor:grab;outline-offset:-3px}
+#g3f{padding:1.2rem}
+.g3m.on{border-color:var(--cy);background:var(--cy);color:#04121a;font-weight:600}
+#g3l button[aria-pressed=true]{border-color:var(--cy);background:color-mix(in srgb,var(--cy) 25%,transparent)}
+#g3l i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.35rem}
+#g3t table{width:100%;border-collapse:collapse;font-size:.9rem}#g3t th,#g3t td{text-align:left;padding:.35rem .5rem;border-bottom:1px solid var(--bd)}
+@media(max-width:600px){.g3box canvas{height:360px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav aria-label="Main">
+<b>🌍 AirGuard 3D</b>
+<div class="links" id="links">
+<a href="#hero">Home</a><a href="#air">Air Quality</a><a href="#causes">Causes</a><a href="#effects">Effects</a><a href="#map">Live Map</a><a href="#graph3d">3D Graph</a><a href="#solutions">Solutions</a><a href="#how">How it Works</a><a href="#eco">AI Assistant</a><a href="#quiz">Quiz</a><a href="#action">Take Action</a><a href="#faq">FAQ</a><a href="#limits">Limitations</a><a href="#about">About Us</a><a href="#contact">Contact</a>
+</div>
+<button id="theme" aria-label="Toggle light or dark theme">◐</button>
+<button id="menu" aria-label="Open menu">☰</button>
+</nav>
+
+<header id="hero">
+<canvas id="c3d" aria-hidden="true"></canvas>
+<div class="hero-in">
+<p class="slogan">Hawa Saaf, Saans Safe!</p>
+<h1>The air we breathe, the future we create</h1>
+<p class="sub">Discover air pollution, explore real solutions, and take action for a cleaner, healthier planet.</p>
+<p><a class="btn pri" href="#air">Explore Air Quality</a> <a class="btn alt" href="#action">Take Action</a></p>
+<div class="card est" id="est">
+<h3>Quick air check</h3>
+<p class="note">Pick your city and AQI, and we’ll suggest what to do today.</p>
+<label for="eqc">City</label><select id="eqc"></select>
+<label for="eqa">Today’s AQI (sample): <b id="eqv"></b></label><input id="eqa" type="range" min="20" max="450" step="5">
+<div class="res"><div>Category<b id="eqk">–</b></div><div>Mask<b id="eqm">–</b></div><div>Outdoor play<b id="eqo">–</b></div></div>
+<p><a class="btn pri" href="#air" id="eqg">See full dashboard</a></p>
+<p class="note">Sample values for demonstration. Not a live reading or medical advice.</p>
+</div>
+<div class="stats">
+<div class="stat"><b data-n="99">0</b><small>% of people breathe air above WHO limits (WHO, 2022)</small></div>
+<div class="stat"><b data-n="7">0</b><small>million premature deaths a year (WHO estimate)</small></div>
+<div class="stat"><b data-n="8">0</b><small>sources covered below</small></div>
+</div>
+<p class="note">Hero figures are historical WHO estimates, not live readings.</p>
+</div>
+</header>
+
+<div class="ticker" aria-hidden="true"><span>Hawa Saaf, Saans Safe! · Ek Ped, Ek Zindagi · Plant a tree today · Burn less, breathe more · Hawa Saaf, Saans Safe! · Ek Ped, Ek Zindagi · Plant a tree today · Burn less, breathe more</span></div>
+
+<section id="who">
+<h2>Who are you?</h2>
+<p class="note">Pick one to get tips made for you.</p>
+<div class="aud" id="aud"></div>
+<div class="card" id="audOut" aria-live="polite">Select a card above.</div>
+</section>
+
+<section id="air">
+<h2>Air quality dashboard</h2>
+<p class="note"><span class="tag">Demonstration data</span> Values below are generated samples for the demo, not live measurements. Categories follow the India CPCB AQI scale. Connect a real API on the backend for live data.</p>
+<label for="city">City</label>
+<select id="city" style="max-width:260px"></select>
+<div class="dash" style="margin-top:1rem">
+<div class="card aqi">
+<div class="n" id="aqiN">–</div><div class="l" id="aqiL"></div>
+<div class="pol" id="pol"></div>
+<p class="note" id="stamp"></p><p><button type="button" id="shw">Share on WhatsApp</button></p>
+</div>
+<div class="card"><div class="chartbox"><canvas id="chart"></canvas></div></div>
+</div>
+</section>
+
+<section id="causes" class="full"><div class="in">
+<h2>Causes of air pollution</h2>
+<div class="grid" id="causeGrid"></div>
+</div></section>
+
+<section id="effects">
+<h2>Effects on life and the planet</h2>
+<div class="grid" id="effGrid"></div>
+<p class="note">Sources: WHO Air Quality Guidelines 2021; WHO ambient air pollution fact sheet; State of Global Air. Health-burden numbers are modelled estimates.</p>
+</section>
+
+<section id="map" class="full"><div class="in">
+<h2>Pollution map</h2>
+<p class="note"><span class="tag">Sample markers</span> Tap a marker for details. Positions are approximate city locations; readings are demo values.</p>
+<div class="map">
+<svg viewBox="0 0 600 340" role="img" aria-label="Schematic map of sample monitoring stations in eastern India">
+<rect width="600" height="340" fill="none"/>
+<g stroke="var(--bd)" stroke-width="1"><path d="M0 85H600M0 170H600M0 255H600M150 0V340M300 0V340M450 0V340"/></g>
+<g id="pins"></g>
+</svg>
+<div id="pop">Select a station.</div>
+<div class="leg"><span><i style="background:#3ddc97"></i>Good–Satisfactory</span><span><i style="background:#ffd24d"></i>Moderate</span><span><i style="background:#ff9f43"></i>Poor</span><span><i style="background:#ff5d6c"></i>Very poor</span><span><i style="background:#b0306a"></i>Severe</span></div>
+</div>
+<h3 style="margin-top:2rem">Find a place on Google Maps</h3>
+<form class="row" id="gmf" style="flex-wrap:wrap"><input id="gmq" aria-label="Search a place" value="Bhagalpur, Bihar, India"><button class="pri">Search map</button><button type="button" id="rs">🚉 Railway stations near me</button></form>
+<div class="map" style="margin-top:1rem"><iframe id="gm" title="Google Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;height:380px;border:0;display:block"></iframe></div>
+<p class="note" id="gmn"></p>
+</div></section>
+
+<section id="graph3d">
+<h2>3D air quality graph: India</h2>
+<p class="note"><span class="tag">Demonstration data</span> Bars show sample values for 17 Indian cities, placed at their approximate positions. Drag to rotate (or use arrow keys), tap a bar for details. Not live or official readings.</p>
+<p><button type="button" class="g3m on" data-m="aqi" aria-pressed="true">AQI</button> <button type="button" class="g3m" data-m="pm" aria-pressed="false">PM2.5</button> <button type="button" id="g3a" aria-pressed="true">⏸ Auto-rotate: on</button> <button type="button" id="g3r">Reset view</button></p>
+<div class="map g3box"><canvas id="g3c" tabindex="0" role="img" aria-label="3D bar graph of sample air quality for 17 Indian cities. Use the city buttons or table below for the values."></canvas><div id="g3f" class="note" hidden>The 3D view isn’t available in this browser. Please use the city buttons and table below.</div></div>
+<div class="leg" style="padding:.8rem 0 0"><span><i style="background:#3ddc97"></i>Satisfactory</span><span><i style="background:#ffd24d"></i>Moderate</span><span><i style="background:#ff9f43"></i>Poor</span><span><i style="background:#ff5d6c"></i>Very poor</span><span><i style="background:#b0306a"></i>Severe</span><span>Bar height = selected measure</span></div>
+<div id="g3i" class="card" aria-live="polite" style="margin-top:1rem">Tap a bar or pick a city below.</div>
+<div class="q" id="g3l"></div>
+<details><summary>View the data as a table</summary><div id="g3t"></div></details>
+</section>
+
+<section id="solutions">
+<h2>Solutions for a cleaner future</h2>
+<div class="grid" id="solGrid"></div>
+</section>
+
+<section id="how">
+<h2>How it works</h2>
+<ol class="steps">
+<li><h3>Check the air</h3><p>Open the dashboard and see AQI and pollutants for your city.</p></li>
+<li><h3>Understand it</h3><p>Read the category, then ask Manish what PM2.5 or a mask means for you.</p></li>
+<li><h3>Protect yourself</h3><p>Follow the tips: mask, windows, outdoor activity.</p></li>
+<li><h3>Report hotspots</h3><p>Submit smoke, dust or burning so the community can see it.</p></li>
+<li><h3>Cut your footprint</h3><p>Use the eco calculator to find easy changes.</p></li>
+<li><h3>Spread the word</h3><p>Share the AQI on WhatsApp with family and neighbours.</p></li>
+</ol>
+</section>
+
+<section id="eco" class="full"><div class="in chat">
+<h2>Manish – your AI assistant</h2>
+<p class="note" id="ainote"><span class="tag">Basic mode</span> Prepared answers only, because AI mode isn’t available in this view. During severe pollution, follow local public-health guidance.</p>
+<p><button type="button" id="vo">🔊 Voice: on</button> <select id="vl" aria-label="Voice language" style="width:auto"><option value="en-IN">English</option><option value="hi-IN">हिन्दी</option></select> <select id="vp" aria-label="Choose voice" style="width:auto;max-width:100%"><option value="auto">Auto (male)</option></select></p>
+<div id="log" aria-live="polite"></div>
+<div class="q" id="quick"></div>
+<form class="row" id="chatf"><input id="cin" aria-label="Ask Manish" placeholder="Ask about AQI, PM2.5, masks…"><button type="button" id="mic" aria-label="Speak your question">🎤</button><button class="pri">Ask</button></form>
+<div id="qs" class="card" style="margin-top:1rem;display:none"></div>
+</div></section>
+
+<section id="quiz">
+<div class="qwrap">
+<h2 id="qh">Air pollution quiz</h2>
+<p class="note" id="qnote">Test what you know. 50 questions in English and हिन्दी. Answers are for learning and awareness.</p>
+<p><button type="button" class="qlb on" data-l="en">English</button> <button type="button" class="qlb" data-l="hi">हिन्दी</button></p>
+<div class="card" id="qsetup">
+<label for="qn" id="qnl">Number of questions</label>
+<select id="qn"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="50">50</option></select>
+<p><button type="button" class="pri" id="qstart">Start quiz</button></p>
+<p class="note" id="qbest"></p>
+</div>
+<div class="card" id="qplay" style="display:none">
+<p class="note" id="qprog" aria-live="polite"></p>
+<div class="bar"><i id="qbar"></i></div>
+<div id="qtext"></div>
+<div id="qopts"></div>
+<div id="qfb" aria-live="polite"></div>
+<p><button type="button" class="pri" id="qnext" style="display:none">Next</button></p>
+</div>
+<div class="card" id="qres" style="display:none" aria-live="polite"></div>
+</div>
+</section>
+
+<section id="action">
+<h2>Take action</h2>
+<div class="two">
+<div class="card">
+<h3>Report pollution</h3>
+<p class="note">Reports are public submissions, visible to anyone who can open this page, and are not verified by authorities. Don’t include personal details.</p>
+<form id="rep">
+
+<label for="rl">Location *</label><input id="rl" required maxlength="100">
+<label for="rt">Type *</label><select id="rt"><option>Smoke</option><option>Waste burning</option><option>Construction dust</option><option>Industrial emissions</option><option>Vehicle pollution</option></select>
+<label for="rd">Description *</label><textarea id="rd" required minlength="10" maxlength="500" rows="3"></textarea>
+<label class="consent" for="rc"><input type="checkbox" id="rc" required>I understand this report will be public and unverified, and I have not included personal details.</label>
+<p><button class="pri">Submit report</button></p>
+</form>
+<p class="note" id="dbst">Checking database…</p><div id="reps" class="note"></div>
+</div>
+<div class="card">
+<h3>Eco-impact calculator</h3>
+<p class="note">Rough estimate using average emission factors; not a precise measurement.</p>
+<label for="km">Daily travel (km)</label><input id="km" type="number" min="0" max="500" value="10">
+<label for="tr">Transport</label><select id="tr"><option value="0.02">Walk / cycle</option><option value="0.05">Bus / metro</option><option value="0.1">Motorbike</option><option value="0.17">Petrol car</option></select>
+<label for="el">Electricity (kWh / month)</label><input id="el" type="number" min="0" max="3000" value="150">
+<label for="fu">Cooking fuel</label><select id="fu"><option value="0.3">LPG / electric</option><option value="1.2">Wood / dung</option></select>
+<p><button class="pri" id="calc">Calculate</button></p>
+<div id="res"></div>
+</div>
+</div>
+</section>
+
+<section id="faq">
+<h2>Questions, answered</h2>
+<div class="faq">
+<details><summary>What does AQI mean?</summary><p>AQI turns pollutant levels into one number. On the India CPCB scale, 0–100 is good to satisfactory, 101–200 moderate, 201–300 poor, 301–400 very poor and 401+ severe.</p></details>
+<details><summary>Is the data on this page live?</summary><p>No. All readings here are labelled demo samples. For live data, use official sources such as CPCB.</p></details>
+<details><summary>Which mask should I wear?</summary><p>A well-fitted N95 or FFP2 mask helps outdoors on poor-air days. Cloth masks and dust scarves filter little fine PM2.5.</p></details>
+<details><summary>Who can see my pollution report?</summary><p>Reports are public and unverified. Please don’t include personal details. For severe cases also contact your local pollution control board.</p></details>
+<details><summary>How can I reduce pollution at home?</summary><p>Avoid burning waste, choose clean cooking fuel, save electricity, use public transport and plant trees.</p></details>
+<details><summary>Is this medical advice?</summary><p>No. If you have breathing trouble, see a doctor and follow local public-health guidance.</p></details>
+</div>
+</section>
+
+<section id="limits" class="full"><div class="in">
+<h2>Limitations of this website</h2>
+<p class="note">Please read before relying on anything here.</p>
+<div class="grid">
+<div class="card"><div class="ic">📊</div><h3>Demo data only</h3><p>AQI, pollutant values, charts and map markers are generated samples. They are not live or official readings. For real data, use CPCB or your state pollution control board.</p></div>
+<div class="card"><div class="ic">🩺</div><h3>Not medical advice</h3><p>Health tips are general awareness. If you have breathing trouble or a medical condition, see a doctor and follow local public-health guidance.</p></div>
+<div class="card"><div class="ic">🤖</div><h3>AI assistant can be wrong</h3><p>Manish may make mistakes, is limited to air-pollution topics, and falls back to a few prepared answers when AI mode isn’t available.</p></div>
+<div class="card"><div class="ic">📣</div><h3>Reports are public and unverified</h3><p>Pollution reports are not checked by any authority and are not forwarded to one. For severe cases, contact your local pollution control board or municipal helpline.</p></div>
+<div class="card"><div class="ic">🗺️</div><h3>Map is schematic</h3><p>Station markers are approximate city positions, not exact monitoring sites. Only a few eastern and northern Indian cities are included. The 3D graph uses the same kind of demo values for 17 cities.</p></div>
+<div class="card"><div class="ic">🧮</div><h3>Calculator is an estimate</h3><p>The eco-impact result uses average emission factors and rough assumptions, not a precise measurement of your footprint.</p></div>
+<div class="card"><div class="ic">💾</div><h3>Storage and backend</h3><p>Data is kept in the page’s shared database when available, otherwise only in your own browser. There is no Node/Express + SQLite server, no alerts and no user accounts.</p></div>
+<div class="card"><div class="ic">🌐</div><h3>Browser and network needs</h3><p>Voice input and output, the 3D globe and Google Maps depend on your browser, permissions and internet connection, and may not work everywhere.</p></div>
+<div class="card"><div class="ic">🎓</div><h3>Student project</h3><p>AirGuard 3D is a school and hackathon project, not an official government or scientific service, and carries no guarantee of accuracy or availability.</p></div>
+</div>
+</div></section>
+
+<section id="about" class="full"><div class="in">
+<h2>About AirGuard 3D</h2>
+<p style="max-width:44em">AirGuard 3D is a school and hackathon project that explains air pollution, shows how air quality is read, and helps people act. Demo data is always labelled. Reports and subscriptions are stored in the page’s built-in shared database. The Node/Express + SQLite version from the project brief is not part of this hosted page.</p>
+<h3>Message us on WhatsApp</h3>
+<div class="q" id="wq"></div>
+<form id="sub" style="max-width:460px"><div class="row"><input id="em" type="email" required aria-label="Email" placeholder="Email for awareness updates"><button class="pri">Subscribe</button></div>
+<label class="consent" for="sc"><input type="checkbox" id="sc" required>I agree to receive awareness emails and understand I can ask to stop them.</label></form>
+</div></section>
+
+<section id="contact">
+<h2>Contact us</h2>
+<div class="two">
+<div class="card"><h3>Send a message</h3>
+<form id="cf"><label for="cn">Name *</label><input id="cn" required maxlength="60">
+<label for="ce">Email or phone (optional)</label><input id="ce" maxlength="80">
+<label for="cm">Message *</label><textarea id="cm" required minlength="10" maxlength="600" rows="4"></textarea>
+<label class="consent" for="cc"><input type="checkbox" id="cc" required>I agree that AirGuard 3D may save this message and contact me about it.</label>
+<p><button class="pri">Send message</button> <button type="button" id="cw">Send on WhatsApp</button></p></form></div>
+<div class="card"><h3>Other ways to reach us</h3>
+<p><a class="btn pri" id="cwa" target="_blank" rel="noopener">💬 Chat on WhatsApp</a></p>
+<p class="note">WhatsApp: +91 79797 85383</p>
+<p><a href="#eco">Ask Manish, our AI assistant,</a> for instant answers.</p>
+<p class="note">Messages sent here are saved so the team can reply. Please don’t share sensitive details.</p></div>
+</div>
+<div id="cp" class="card" style="margin-top:1rem;display:none"></div>
+</section>
+
+<footer>
+<div class="g">
+<div><h3>🌍 AirGuard 3D</h3><p class="note">Smart air pollution monitoring and awareness for cleaner cities.</p></div>
+<div><h3>Quick links</h3><a href="#air">Air Quality</a><a href="#map">Map</a><a href="#action">Report</a><a href="#limits">Limitations</a><a href="https://wa.me/917979785383?text=Hi%20AirGuard%203D%2C%20I%20have%20a%20question%20about%20air%20pollution." target="_blank" rel="noopener">Questions? WhatsApp us</a></div>
+<div><h3>Resources</h3><a href="https://www.who.int/health-topics/air-pollution" target="_blank" rel="noopener">WHO – Air pollution</a><a href="https://cpcb.nic.in/" target="_blank" rel="noopener">CPCB India</a><a href="https://www.stateofglobalair.org/" target="_blank" rel="noopener">State of Global Air</a></div>
+<div><h3>Data and privacy</h3><p class="note">All readings here are demo data. Reports are public. Subscriber emails are visible only to the page owner and editors.</p></div>
+</div>
+<p class="fin">Clean Air Is Everyone’s Responsibility. Every Action Matters.</p>
+<p class="note" style="text-align:center">© 2026 AirGuard 3D</p>
+</footer>
+<a id="cta" class="btn pri" href="#action">Report pollution</a>
+<button id="top" aria-label="Back to top">↑</button>
+<a id="wa" href="https://wa.me/917979785383?text=Hi%20AirGuard%203D%2C%20I%20have%20a%20question%20about%20air%20pollution." target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">💬 Ask on WhatsApp</a>
+<a id="hi" href="#eco">👋 Hi, I’m Manish. Ask me about air pollution.</a>
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.opacity=1;setTimeout(()=>e.style.opacity=0,2200)};
+const sg=(k,v)=>{try{return v===undefined?JSON.parse(localStorage.getItem(k)):localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};
+
+/* theme, nav, progress */
+const root=document.documentElement;
+$('#theme').onclick=()=>{const d=getComputedStyle(root).getPropertyValue('--bg').trim()==='#07121f';root.dataset.theme=d?'light':'dark';sg('ag-theme',root.dataset.theme)};
+const st=sg('ag-theme');if(st)root.dataset.theme=st;
+$('#menu').onclick=()=>$('#links').classList.toggle('open');
+$('#links').onclick=()=>$('#links').classList.remove('open');
+const secs=[...document.querySelectorAll('header#hero,section')],lk=[...document.querySelectorAll('#links a')];
+addEventListener('scroll',()=>{const h=document.documentElement;$('#prog').style.width=(scrollY/(h.scrollHeight-innerHeight)*100)+'%';$('#top').style.display=scrollY>600?'block':'none';
+let cur=secs[0].id;secs.forEach(s=>{if(s.getBoundingClientRect().top<150)cur=s.id});lk.forEach(a=>a.classList.toggle('on',a.hash==='#'+cur))},{passive:true});
+$('#top').onclick=()=>scrollTo({top:0});
+function gmap(q){const e=encodeURIComponent(q);$('#gm').src='https://www.google.com/maps?q='+e+'&output=embed';$('#gmn').innerHTML='If the map doesn’t load, <a href="https://www.google.com/maps/search/?api=1&query='+e+'" target="_blank" rel="noopener">open it in Google Maps</a>.'}
+$('#gmf').onsubmit=e=>{e.preventDefault();const q=$('#gmq').value.trim();if(q)gmap(q)};gmap($('#gmq').value);
+$('#rs').onclick=()=>{const fl=()=>{gmap('railway station near '+$('#gmq').value);toast('Showing stations near the searched place instead.')};
+if(!navigator.geolocation){fl();return}
+toast('Allow location access to find stations near you.');
+navigator.geolocation.getCurrentPosition(p=>{const c=p.coords.latitude.toFixed(5)+','+p.coords.longitude.toFixed(5);gmap('railway station near '+c);$('#gmn').innerHTML+=' Showing railway stations near your current location.'},fl,{enableHighAccuracy:true,timeout:10000})};
+
+/* counters */
+document.querySelectorAll('[data-n]').forEach(e=>{const t=+e.dataset.n;let i=0;const f=()=>{i+=Math.max(1,t/40);if(i>=t){e.textContent=t;return}e.textContent=Math.floor(i);requestAnimationFrame(f)};rm?e.textContent=t:f()});
+
+/* 3D hero */
+(function(){const c=$('#c3d');let gl;try{gl=!!c.getContext('webgl')}catch(e){}
+if(!gl||!window.THREE)return;
+const w=()=>c.parentElement.clientWidth,h=()=>c.parentElement.clientHeight;
+const r=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:false});r.setPixelRatio(Math.min(devicePixelRatio,1.5));
+const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,100);cam.position.z=7;
+sc.add(new THREE.AmbientLight(0x6688aa,.8));const dl=new THREE.DirectionalLight(0xffffff,1.1);dl.position.set(5,3,5);sc.add(dl);
+const g=new THREE.Group();sc.add(g);
+const earth=new THREE.Mesh(new THREE.SphereGeometry(1.8,48,48),new THREE.MeshPhongMaterial({color:0x1e6fa8,emissive:0x061a2a,shininess:20}));g.add(earth);
+const lc=[0x2fb36b,0x3d8f4f,0x7a8f4a];for(let i=0;i<14;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.3+Math.random()*.35,10,8),new THREE.MeshPhongMaterial({color:lc[i%3],flatShading:true}));const p=new THREE.Vector3().randomDirection?0:0;
+const th=Math.random()*6.28,ph=Math.acos(2*Math.random()-1);m.position.set(1.78*Math.sin(ph)*Math.cos(th),1.78*Math.cos(ph),1.78*Math.sin(ph)*Math.sin(th));m.scale.set(1,1,.25);m.lookAt(0,0,0);earth.add(m)}
+const atm=new THREE.Mesh(new THREE.SphereGeometry(2,40,40),new THREE.MeshBasicMaterial({color:0x3fe0ff,transparent:true,opacity:.14,side:THREE.BackSide}));atm.scale.setScalar(1.1);g.add(atm);
+const smog=new THREE.Mesh(new THREE.SphereGeometry(1.92,32,32),new THREE.MeshBasicMaterial({color:0x8a6a4a,transparent:true,opacity:.28}));g.add(smog);
+const n=700,pa=new Float32Array(n*3);for(let i=0;i<n;i++){const R=2.2+Math.random()*2.8,th=Math.random()*6.28,ph=Math.acos(2*Math.random()-1);pa.set([R*Math.sin(ph)*Math.cos(th),R*Math.cos(ph),R*Math.sin(ph)*Math.sin(th)],i*3)}
+const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pa,3));
+const pts=new THREE.Points(pg,new THREE.PointsMaterial({color:0xff9f43,size:.035,transparent:true,opacity:.85}));sc.add(pts);
+let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+const rs=()=>{r.setSize(w(),h(),false);cam.aspect=w()/h();cam.updateProjectionMatrix();g.position.x=w()>800?2.2:0;g.position.y=w()>800?0:-1.4;pts.position.copy(g.position)};rs();addEventListener('resize',rs);
+let t=0;(function a(){requestAnimationFrame(a);if(document.hidden)return;t+=.004;
+const cl=(Math.sin(t*.8)+1)/2;smog.material.opacity=.38*(1-cl)+.04;pts.material.color.setHex(cl>.5?0x3ddc97:0xff9f43);
+if(!rm){earth.rotation.y+=.0025;pts.rotation.y-=.0007;g.rotation.x+=(my*.4-g.rotation.x)*.05;g.rotation.y+=(mx*.5-g.rotation.y)*.05}
+r.render(sc,cam)})()})();
+
+/* dashboard (demo data) */
+const cities={Delhi:[210,112,298,62,14,1.9,41],Dhanbad:[165,84,201,38,22,1.4,66],Ranchi:[96,47,128,24,6,.9,38],Kolkata:[148,76,172,45,9,1.2,57],Patna:[182,95,236,41,8,1.6,52],Bhagalpur:[124,62,160,30,7,1.1,44]};
+const cat=a=>a<=100?['Satisfactory','#3ddc97']:a<=200?['Moderate','#ffd24d']:a<=300?['Poor','#ff9f43']:a<=400?['Very poor','#ff5d6c']:['Severe','#b0306a'];
+const cs=$('#city');Object.keys(cities).forEach(k=>cs.add(new Option(k)));
+let ch;
+function dash(){const v=cities[cs.value],[a,p25,p10,no2,so2,co,o3]=v,[l,c]=cat(a);
+$('#aqiN').textContent=a;$('#aqiN').style.color=c;$('#aqiL').textContent=l;$('#aqiL').style.color=c;
+$('#pol').innerHTML=[['PM2.5',p25,'µg/m³'],['PM10',p10,'µg/m³'],['NO₂',no2,'µg/m³'],['SO₂',so2,'µg/m³'],['CO',co,'mg/m³'],['O₃',o3,'µg/m³']].map(x=>`<div>${x[0]}<b>${x[1]}</b>${x[2]}</div>`).join('');
+$('#stamp').textContent='Source: demo sample · '+new Date().toLocaleString()+' · not live';
+const d=Array.from({length:24},(_,i)=>Math.round(p25*(.75+.35*Math.sin(i/3.8+1)+((i*37)%7)/40)));
+if(ch)ch.destroy();if(!window.Chart)return;
+ch=new Chart($('#chart'),{type:'line',data:{labels:d.map((_,i)=>i+':00'),datasets:[{label:'PM2.5 µg/m³ (sample, last 24 h)',data:d,borderColor:'#3fe0ff',backgroundColor:'rgba(63,224,255,.15)',fill:true,tension:.4,pointRadius:0}]},options:{maintainAspectRatio:false,animation:rm?false:{duration:700},scales:{x:{ticks:{maxTicksLimit:8,color:'#9db6c2'}},y:{ticks:{color:'#9db6c2'}}},plugins:{legend:{labels:{color:'#9db6c2'}}}}})}
+cs.onchange=()=>{dash();advice()};dash();
+
+/* cards */
+const causes=[['🚗','Vehicle emissions','Exhaust releases NO₂, CO and fine particles.','Choose public transport, keep engines tuned.'],['🏭','Industrial pollution','Factories emit SO₂, NOx and particulates.','Scrubbers, filters and stricter monitoring.'],['⚡','Coal and power plants','Burning coal is a major source of SO₂ and PM2.5.','Shift to solar, wind and hydro.'],['🏗️','Construction dust','Loose dust lifts PM10 on dry days.','Cover sites, spray water, screen debris.'],['🔥','Waste burning','Open burning releases smoke and toxic gases.','Segregate waste and compost.'],['🪓','Deforestation','Fewer trees means less natural air filtering.','Protect forests and plant native trees.'],['🌾','Agricultural burning','Stubble fires create seasonal smoke spikes.','Use crop-residue machines and reuse straw.'],['🍳','Household fuels','Wood and dung stoves pollute indoor air.','Switch to LPG, induction or biogas.']];
+$('#causeGrid').innerHTML=causes.map(c=>`<div class="card"><div class="ic">${c[0]}</div><h3>${c[1]}</h3><p>${c[2]}</p><details><summary>Prevention</summary><p>${c[3]}</p></details></div>`).join('');
+const eff=[['🫁','Human health','Fine particles reach deep into lungs and blood. Established: linked to asthma, heart and lung disease.'],['👶','Children and elders','More vulnerable: developing lungs and existing conditions raise risk. Established.'],['🦉','Wildlife','Pollutants harm habitats and food chains, and acid deposition damages ecosystems.'],['🌡️','Climate','Black carbon and ozone warm the air; sulphates can cool it. Effects are complex.'],['🌽','Agriculture','Ground-level ozone reduces crop yields. Regional estimates vary by study.'],['💧','Water and soil','Acid rain and deposition change soil and water chemistry.'],['🏙️','Visibility','Haze cuts visibility and disrupts travel and daily life.']];
+$('#effGrid').innerHTML=eff.map(c=>`<div class="card"><div class="ic">${c[0]}</div><h3>${c[1]}</h3><p>${c[2]}</p></div>`).join('');
+const sol=[['☀️','Solar and renewables','Rooftop solar cuts coal-based demand.'],['🚌','Electric and public transport','One full bus replaces dozens of cars.'],['🌳','Urban forests','Trees trap dust and cool streets.'],['🏭','Emission control','Filters and scrubbers cut factory output.'],['♻️','Waste segregation','Separate wet, dry and hazardous waste.'],['🍲','Clean cooking','LPG, induction and biogas protect homes.'],['🧱','Dust management','Water spraying and covered trucks.'],['🏢','Efficient buildings','Insulation and LEDs reduce power use.'],['📡','Smart sensors','Low-cost sensors show local hotspots.'],['🌆','Green cities','Plan for walking, cycling and green space.']];
+$('#solGrid').innerHTML=sol.map(c=>`<div class="card"><div class="ic">${c[0]}</div><h3>${c[1]}</h3><details><summary>Learn more</summary><p>${c[2]}</p></details></div>`).join('');
+
+/* map */
+const stn=[['Delhi',470,60,298],['Patna',410,130,236],['Kolkata',500,230,172],['Dhanbad',420,195,201],['Ranchi',380,215,128],['Bhagalpur',455,160,160],['Lucknow',320,100,185],['Bhubaneswar',430,300,88]];
+$('#pins').innerHTML=stn.map((s,i)=>`<circle tabindex="0" role="button" aria-label="${s[0]} station" data-i="${i}" cx="${s[1]-120}" cy="${s[2]+10}" r="9" fill="${cat(s[3])[1]}" stroke="#fff" stroke-width="1.5"/><text x="${s[1]-120+12}" y="${s[2]+14}" font-size="11" fill="var(--mut)">${s[0]}</text>`).join('');
+const show=e=>{const s=stn[e.target.dataset.i];if(!s)return;const a=s[3];$('#pop').innerHTML=`<b>${s[0]} sample station</b><br>AQI ${a} – ${cat(a)[0]} · PM2.5 ${Math.round(a*.5)} µg/m³ · PM10 ${Math.round(a*.7)} µg/m³<br><span class="note">Source: demo data · not a live observation</span>`};
+$('#pins').onclick=show;$('#pins').onkeydown=e=>{if(e.key==='Enter')show(e)};
+
+/* EcoAI */
+const kb=[[/aqi|index|categor/,'AQI turns pollutant levels into one number. On the India CPCB scale: 0–100 good to satisfactory, 101–200 moderate, 201–300 poor, 301–400 very poor, 401+ severe.'],[/pm ?2|pm ?10|particle|pollutant/,'PM2.5 and PM10 are particles under 2.5 and 10 micrometres. PM2.5 reaches deep into the lungs. Other common pollutants: NO₂, SO₂, CO and ground-level ozone.'],[/mask|health|asthma|precaut|safe/,'On poor-air days: limit outdoor exercise, keep windows shut during peaks, use a well-fitted N95/FFP2 mask outdoors, and follow local health advice. See a doctor if you have breathing trouble.'],[/prevent|reduce|stop|solution/,'Use public transport or cycle, save electricity, never burn waste, plant trees, and choose clean cooking fuel.'],[/habit|daily|sustain/,'Carpool, switch off idle devices, carry a cloth bag, compost kitchen waste, and report open burning.'],[/project|school|science/,'Project ideas: compare PM2.5 near a road and a park with a low-cost sensor, count dusty leaves on trees, or survey household cooking fuels.']];
+const add=(t,c)=>{const d=document.createElement('div');d.className='m '+c;d.textContent=t;$('#log').append(d);$('#log').scrollTop=1e5;return d};
+let SMP=null,hist=[],busy=false;
+const fb=q=>{const m=kb.find(k=>k[0].test(q.toLowerCase()));return m?m[1]:'In basic mode I only know a few topics: AQI, pollutants, health precautions, prevention, daily habits and school projects.'};
+const SYS='You are Manish, the friendly assistant on AirGuard 3D, an air pollution awareness website. Answer questions about air pollution, AQI, pollutants, health precautions, prevention, sustainable habits, school projects and how to use this site. Be accurate and concise (under 120 words) in plain language, and reply in the language the user writes in (English or Hinglish). Never invent live readings: this site’s data is demo data. For medical concerns, advise seeing a doctor and following local public-health guidance. Politely decline unrelated topics.';
+async function ask(q){if(busy){toast('Please wait for the reply.');return}add(q,'u');lastQ=q;clearTimeout(idle);logQ(q);
+if(!SMP){setTimeout(()=>{const t=fb(q);add(t,'b');speak(t);nudge();followUp()},300);return}
+busy=true;hist.push({role:'user',content:q});const el=add('Thinking…','b');
+const msgs=hist.slice(-7).map(x=>({role:x.role,content:x.content}));msgs[0].content=SYS+' Replies may be read aloud, so avoid markdown, lists and emojis. Preferred language code: '+$('#vl').value+' (if hi-IN, answer in Hindi using Devanagari script).'+'\n\nConversation so far. Answer the last user message.\n\n'+msgs[0].content;
+try{const r=await SMP(msgs,{cache:false,onText:o=>{el.textContent=o.text}});const t=(r.text||'').trim()||fb(q);el.textContent=t;hist.push({role:'assistant',content:t});speak(t)}
+catch(e){hist.pop();const c=e&&e.code;if(c==='not_granted'){SMP=null;$('#ainote').innerHTML='<span class="tag">Basic mode</span> AI access was declined, so Manish uses prepared answers.'}el.textContent=fb(q)+(c==='rate_limited'?' (The AI is busy right now, so this is a basic answer.)':'')}
+nudge();followUp();busy=false}
+let voiceOn=true,greeted=false,VOICES=[];
+function lv(){if(!window.speechSynthesis)return;VOICES=speechSynthesis.getVoices();const s=$('#vp'),cur=s.value;s.innerHTML='';s.add(new Option('Auto (male)','auto'));VOICES.filter(v=>/^(en|hi)/i.test(v.lang)).forEach(v=>s.add(new Option(v.name+' ('+v.lang+')',v.voiceURI)));s.value=[...s.options].some(o=>o.value===cur)?cur:'auto'}
+if(window.speechSynthesis){lv();speechSynthesis.onvoiceschanged=lv}
+function speak(t){if(!voiceOn||!window.speechSynthesis||!t)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`]/g,''));u.lang=/[\u0900-\u097F]/.test(t)?'hi-IN':'en-IN';const vs=VOICES.length?VOICES:speechSynthesis.getVoices(),pv=$('#vp').value,L=u.lang.slice(0,2),lg=x=>x.lang.replace('_','-'),M=/\bmale\b|ravi|prabhat|hemant|madhur|rishi|david|daniel|alex|mark|james|guy|george|aaron|fred|ryan|thomas|oliver/i,F=/female|zira|heera|neerja|swara|kalpana|lekha|veena|samantha|karen|susan|hazel|moira|tessa|aria|jenny|sonia/i,ok=x=>M.test(x.name)&&!F.test(x.name),v=vs.find(x=>lg(x)===u.lang&&ok(x))||vs.find(x=>lg(x).startsWith(L)&&ok(x))||vs.find(x=>lg(x)===u.lang&&!F.test(x.name))||vs.find(x=>lg(x).startsWith(L));const pick=pv!=='auto'&&vs.find(x=>x.voiceURI===pv),fv=pick||v;if(fv)u.voice=fv;u.pitch=pick?1:(v&&ok(v)?.9:.55);u.rate=.92;speechSynthesis.speak(u)}catch(e){}}
+function greet(){if(greeted)return;greeted=true;speak($('#vl').value==='hi-IN'?'नमस्ते, मैं मनीष हूँ, आपका वायु प्रदूषण सहायक। मुझसे कुछ भी पूछिए।':'Hello, I am Manish, your air pollution assistant. Ask me anything.')}
+$('#vo').onclick=()=>{voiceOn=!voiceOn;$('#vo').textContent='🔊 Voice: '+(voiceOn?'on':'off');if(voiceOn)greet();else if(window.speechSynthesis)speechSynthesis.cancel()};
+$('#cin').addEventListener('focus',greet);
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$('#mic').onclick=()=>{greet();if(!SR){toast('Voice input isn’t supported in this browser. Try Chrome or Edge.');return}
+if(window.speechSynthesis)speechSynthesis.cancel();
+const r=new SR();r.lang=$('#vl').value;r.interimResults=false;
+r.onresult=e=>{ask(e.results[0][0].transcript)};
+r.onerror=e=>toast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Microphone access is blocked. Allow it in your browser settings.':'I couldn’t hear you. Try again.');
+r.onend=()=>$('#mic').classList.remove('on');
+$('#mic').classList.add('on');try{r.start()}catch(x){$('#mic').classList.remove('on')}};
+let nudged=false,idle,lastRep=null,lastQ='';
+const wa=(t,share)=>'https://wa.me/'+(share?'':'917979785383')+'?text='+encodeURIComponent(t);
+$('#cwa').href=wa('Hi AirGuard 3D, I have a question.');
+$('#cf').onsubmit=async e=>{e.preventDefault();const n=$('#cn').value.trim(),m=$('#cm').value.trim(),c=$('#ce').value.trim();if(!n||m.length<10){toast('Add your name and a message of at least 10 characters.');return}
+if(!DB||!USER){toast('Saving isn’t available in this view. Use “Send on WhatsApp” instead.');return}
+try{const r=DB.doc('contacts/'+await USER.id()),s=await r.get(),it=(s.exists&&s.data().items)||[];it.push({n,c,m,at:Date.now()});await r.set({items:it.slice(-10)});e.target.reset();toast('Message sent. We’ll get back to you.');auto('Manish here: thanks, '+n+'. Your message has been received.')}catch(x){toast('Could not send. Please try WhatsApp instead.')}};
+$('#cw').onclick=()=>{const n=$('#cn').value.trim(),m=$('#cm').value.trim();window.open(wa('Hi AirGuard 3D, I am '+(n||'a visitor')+'. '+m),'_blank','noopener')};
+function cpanel(){const p=$('#cp');p.style.display='block';p.innerHTML='<h3>Contact messages (visible to you only)</h3><div id="cl" class="note">Loading…</div>';DB.collection('contacts').onSnapshot(s=>{const a=[];s.docs.forEach(d=>((d.data().items)||[]).forEach(i=>a.push(i)));a.sort((x,y)=>y.at-x.at);$('#cl').innerHTML=a.length?a.slice(0,15).map(i=>`<div>• <b>${esc(String(i.n))}</b> ${esc(String(i.c||''))}: ${esc(String(i.m))} <span class="note">${new Date(i.at).toLocaleString()}</span></div>`).join(''):'No messages yet.'},()=>{$('#cl').textContent='Could not load messages.'})}
+$('#shw').onclick=()=>{const a=cities[cs.value][0];window.open(wa('Air quality in '+cs.value+' (demo data): AQI '+a+', '+cat(a)[0]+'. Check AirGuard 3D: '+location.href,true),'_blank','noopener')};
+[['Ask a question','Hi AirGuard 3D, I have a question about air pollution: '],['Report pollution','Hi, I want to report pollution. Location: , Type: , Details: '],['School project help','Hi, I need help with a school air pollution project.'],['Volunteer','Hi, I want to volunteer for clean air activities.']].forEach(([l,m])=>{const a=document.createElement('a');a.className='btn';a.textContent='💬 '+l;a.href=wa(m);a.target='_blank';a.rel='noopener';$('#wq').append(a)});
+function auto(t){add(t,'b');if(greeted)speak(t)}
+function followUp(){clearTimeout(idle);idle=setTimeout(()=>auto('Manish here: do you want help with anything else? You can ask about masks, AQI or school projects.'),45000)}
+function repMsg(){auto('Manish here: thanks for your report. It is public and unverified for now. If the smoke or dust is severe, please also contact your local pollution control board or municipal helpline.');if(lastRep){const d=add('','b');d.innerHTML='<a href="'+wa('Pollution report ('+lastRep.t+') at '+lastRep.l+': '+lastRep.d)+'" target="_blank" rel="noopener">Send this report to us on WhatsApp</a>';$('#log').scrollTop=1e5}}
+function advice(){const a=cities[cs.value][0],l=cat(a)[0],tip=a<=100?'Air is fine for most people, so it is a good day for outdoor activity.':a<=200?'Sensitive people should reduce long outdoor exertion.':a<=300?'Wear an N95 mask outdoors and avoid heavy exercise outside.':'Stay indoors, keep windows closed, and wear a mask if you must go out.';auto('Manish here: for '+cs.value+', the demo AQI is '+a+' ('+l+'). '+tip+' This is sample data, not a live reading.')}
+setTimeout(()=>{if(!nudged)auto('Manish here: need help understanding AQI or staying safe from pollution? Just type your question or tap 🎤.')},20000);
+function nudge(){if(nudged)return;nudged=true;setTimeout(()=>{const d=add('','b');d.innerHTML='Need a person? <a href="'+wa('Hi AirGuard 3D, my question: '+lastQ)+'" target="_blank" rel="noopener">Send my question on WhatsApp</a>';$('#log').scrollTop=1e5},700)}
+async function logQ(q){if(!DB||!USER)return;try{const r=DB.doc('queries/'+await USER.id()),s=await r.get(),it=(s.exists&&s.data().items)||[];it.push({q:q.slice(0,300),at:Date.now()});await r.set({items:it.slice(-20)})}catch(e){}}
+function qpanel(){const p=$('#qs');p.style.display='block';p.innerHTML='<h3>Client questions (visible to you only)</h3><div id="ql" class="note">Loading…</div>';DB.collection('queries').onSnapshot(s=>{const a=[];s.docs.forEach(d=>((d.data().items)||[]).forEach(i=>a.push(i)));a.sort((x,y)=>y.at-x.at);$('#ql').innerHTML=a.length?a.slice(0,15).map(i=>`<div>• ${esc(String(i.q))} <span class="note">${new Date(i.at).toLocaleString()}</span></div>`).join(''):'No questions yet.'},()=>{$('#ql').textContent='Could not load questions.'})}
+setTimeout(()=>{$('#hi').style.display='block';setTimeout(()=>$('#hi').style.display='none',12000)},4000);$('#hi').onclick=()=>{$('#hi').style.display='none';greet()};
+(async()=>{try{const s=await claude.use('sample');if(s){SMP=s;$('#ainote').innerHTML='<span class="tag">AI assistant</span> Answers are generated by Claude and may contain mistakes. This is not medical advice. Your questions are saved so the team can follow up, so don’t share personal details. During severe pollution, follow local public-health guidance.'}}catch(e){}})();
+add('Hi! I’m Manish, your air-pollution assistant. Ask me anything about air pollution, in English or Hinglish. Pick a question below, type, or tap 🎤 to speak.','b');
+['What is AQI?','What is PM2.5?','How do I stay safe?','How can I reduce pollution?','Science project ideas'].forEach(q=>{const b=document.createElement('button');b.textContent=q;b.onclick=()=>ask(q);$('#quick').append(b)});
+$('#chatf').onsubmit=e=>{e.preventDefault();const v=$('#cin').value.trim();if(v){ask(v);$('#cin').value=''}};
+
+/* report form */
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DB=null,USER=null,reports=[];
+function reps(){const r=DB?reports:(sg('ag-reps')||[]).slice().reverse(),c={};r.forEach(x=>c[x.t]=(c[x.t]||0)+1);
+$('#reps').innerHTML=r.length?'<b>Community dashboard ('+r.length+' reports)</b>'+Object.entries(c).map(([k,v])=>`<div>${esc(k)}: <b>${v}</b><div class="bar"><i style="width:${v/r.length*100}%"></i></div></div>`).join('')+r.slice(0,5).map(x=>`<div>• ${esc(String(x.t))} – ${esc(String(x.l))}: ${esc(String(x.d).slice(0,60))} <span class="tag">${esc(x.status||'Unverified')}</span>${DB&&x.id&&USER&&USER.isOwner()&&x.status!=='Reviewed'?` <button data-id="${esc(x.id)}">Mark reviewed</button>`:''}</div>`).join(''):'No reports yet. Be the first to submit one.'}
+$('#rep').onsubmit=async e=>{e.preventDefault();const l=$('#rl').value.trim(),d=$('#rd').value.trim();if(!l||d.length<10){toast('Add a location and a description of at least 10 characters.');return}
+const r={l,d,t:$('#rt').value,at:Date.now(),status:'Unverified'};lastRep=r;
+if(DB){try{await DB.collection('reports').add(r);e.target.reset();toast('Report saved to the database.');repMsg()}catch(x){toast('Could not save to the database. Your access level may be view-only.')}return}
+const a=sg('ag-reps')||[];a.push(r);sg('ag-reps',a);e.target.reset();reps();toast('Report saved in this browser.');repMsg()};
+$('#reps').onclick=e=>{const id=e.target.dataset&&e.target.dataset.id;if(id&&DB)DB.doc('reports/'+id).update({status:'Reviewed'}).catch(()=>toast('Could not update the status.'))};
+reps();
+(async()=>{try{DB=await claude.use('db');USER=await claude.use('user')}catch(e){DB=null}
+if(!DB){$('#dbst').textContent='Database unavailable here. Reports are saved in this browser only.';reps();return}
+try{if(USER&&USER.canEdit()){qpanel();cpanel()}}catch(e){}
+const tm=setTimeout(()=>$('#dbst').textContent='The database can’t be reached yet. Data may be out of date.',10000);
+DB.collection('reports').orderBy('at','desc').limit(200).onSnapshot(s=>{clearTimeout(tm);reports=s.docs.map(d=>Object.assign({id:d.id},d.data()));$('#dbst').textContent='Connected to the shared database.';reps()},e=>{clearTimeout(tm);DB=null;$('#dbst').textContent='Database error ('+e.code+'). Reports are saved in this browser only.';reps()})})();
+
+/* calculator */
+$('#calc').onclick=()=>{const km=+$('#km').value||0,f=+$('#tr').value,el=+$('#el').value||0,fu=+$('#fu').value;
+const kg=Math.round(km*f*30+el*.82+fu*30);const pct=Math.min(100,kg/6);
+const tips=[];if(f>=.1)tips.push('Try bus, metro or cycling for some trips.');if(el>200)tips.push('Switch to LED and 5-star appliances.');if(fu>1)tips.push('Move to LPG, induction or biogas for cooking.');if(!tips.length)tips.push('You’re doing well. Plant a tree and share the tips.');
+$('#res').innerHTML=`<h3>≈ ${kg} kg CO₂e / month</h3><div class="bar"><i id="bi"></i></div><p class="note">Estimate: travel factor × distance × 30 days + 0.82 kg/kWh + fuel factor. Not a precise measurement.</p><ul>${tips.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+requestAnimationFrame(()=>$('#bi').style.width=pct+'%')};
+
+/* subscribe */
+$('#sub').onsubmit=async e=>{e.preventDefault();const em=$('#em').value.trim();
+if(DB){try{await DB.doc('subs/'+await USER.id()).set({email:em,at:Date.now()});e.target.reset();toast('Subscribed. Thank you!');auto('Manish here: welcome! You are subscribed to AirGuard 3D awareness updates. Ask me anything about clean air in the meantime.')}catch(x){toast('Could not subscribe right now.')}return}
+const s=sg('ag-subs')||[];s.push(em);sg('ag-subs',s);e.target.reset();toast('Subscribed in this browser (demo).');auto('Manish here: welcome! Ask me anything about clean air in the meantime.')};
+
+/* hero quick air check */
+(function(){const c=$('#eqc'),r=$('#eqa');Object.keys(cities).forEach(k=>c.add(new Option(k)));
+const upd=()=>{const a=+r.value,[l,col]=cat(a);$('#eqv').textContent=a;const k=$('#eqk');k.textContent=l;k.style.color=col;
+$('#eqm').textContent=a<=100?'Not needed':a<=200?'Sensitive: N95':'N95 outdoors';
+$('#eqo').textContent=a<=100?'Fine':a<=200?'Keep it short':a<=300?'Avoid':'Stay indoors'};
+c.onchange=()=>{r.value=Math.round(cities[c.value][0]/5)*5;upd()};r.oninput=upd;c.value='Dhanbad';c.onchange();
+$('#eqg').onclick=()=>{cs.value=c.value;dash()}})();
+
+/* who are you? */
+(function(){const A=[['🏠','Home','Family and daily life','Keep windows shut at peak hours, use clean cooking fuel, avoid burning waste, and check AQI before kids play outside.'],['🎒','Student','School and projects','Try a project: compare PM2.5 near a road and a park. Ask Manish for ideas, and share what you learn.'],['🚗','Commuter','Roads and travel','Choose bus, metro or cycling for some trips, keep your vehicle serviced, and wear a fitted N95 in heavy traffic.'],['🏗️','Business or site','Shops, sites and factories','Cover materials, spray water on dust, avoid open burning, and maintain filters and scrubbers.']];
+const g=$('#aud'),o=$('#audOut');g.innerHTML=A.map((a,i)=>`<button type="button" class="card" data-i="${i}"><span class="ic">${a[0]}</span><b>${a[1]}</b><span class="note">${a[2]}</span></button>`).join('');
+g.onclick=e=>{const b=e.target.closest('button');if(!b)return;const a=A[b.dataset.i];g.querySelectorAll('.card').forEach(x=>x.classList.toggle('sel',x===b));o.innerHTML='<b>'+a[1]+':</b> '+a[3]+' <a href="#eco">Ask Manish</a>'}})();
+
+/* floating report button */
+addEventListener('scroll',()=>{const a=$('#action').getBoundingClientRect();$('#cta').style.display=(scrollY>600&&!(a.top<innerHeight&&a.bottom>0))?'inline-block':'none'},{passive:true});
+
+/* 3D India air quality graph (demo data) */
+(function(){
+const ex=[['Lucknow',185,92,80.95,26.85],['Mumbai',118,55,72.88,19.07],['Chennai',82,36,80.27,13.08],['Bengaluru',74,32,77.59,12.97],['Hyderabad',96,44,78.47,17.38],['Ahmedabad',140,68,72.57,23.02],['Jaipur',152,74,75.79,26.91],['Pune',98,45,73.86,18.52],['Guwahati',128,62,91.74,26.14],['Chandigarh',134,66,76.78,30.73],['Bhubaneswar',88,40,85.82,20.3]];
+const C={Delhi:[77.2,28.6],Dhanbad:[86.45,23.8],Ranchi:[85.3,23.35],Kolkata:[88.36,22.57],Patna:[85.14,25.6],Bhagalpur:[87.0,25.25]};
+const D=Object.keys(cities).map(k=>({n:k,aqi:cities[k][0],pm:cities[k][1],x:C[k][0],y:C[k][1]})).concat(ex.map(e=>({n:e[0],aqi:e[1],pm:e[2],x:e[3],y:e[4]}))).sort((a,b)=>b.aqi-a.aqi);
+const info=d=>'<b>'+d.n+'</b> (sample)<br>AQI <b style="color:'+cat(d.aqi)[1]+'">'+d.aqi+'</b> – '+cat(d.aqi)[0]+' · PM2.5 '+d.pm+' µg/m³<br><span class="note">Source: demo data · not a live observation</span>';
+let sel=0,metric='aqi',api=null;
+function mark(){document.querySelectorAll('#g3l button').forEach((b,k)=>b.setAttribute('aria-pressed',k===sel))}
+function choose(k){sel=k;$('#g3i').innerHTML=info(D[k]);mark();if(api)api.hl(k)}
+$('#g3l').innerHTML=D.map((d,k)=>'<button type="button" aria-pressed="false" data-k="'+k+'"><i style="background:'+cat(d.aqi)[1]+'"></i>'+d.n+' '+d.aqi+'</button>').join('');
+$('#g3l').onclick=e=>{const b=e.target.closest('button');if(b)choose(+b.dataset.k)};
+$('#g3t').innerHTML='<table><thead><tr><th>City</th><th>AQI</th><th>Category</th><th>PM2.5 µg/m³</th></tr></thead><tbody>'+D.map(d=>'<tr><td>'+d.n+'</td><td>'+d.aqi+'</td><td>'+cat(d.aqi)[0]+'</td><td>'+d.pm+'</td></tr>').join('')+'</tbody></table><p class="note">Demo data, not live readings.</p>';
+const cv=$('#g3c');let gl=false;try{gl=!!cv.getContext('webgl')}catch(e){}
+if(!gl||!window.THREE){$('#g3f').hidden=false;cv.style.display='none';$('#g3t').parentElement.open=true;choose(0);return}
+const r=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});r.setPixelRatio(Math.min(devicePixelRatio,2));
+const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1,.1,100);
+sc.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(6,10,5);sc.add(dl);
+const plate=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.MeshBasicMaterial({color:0x3fe0ff,transparent:true,opacity:.07,side:THREE.DoubleSide}));plate.rotation.x=-Math.PI/2;sc.add(plate);
+const grid=new THREE.GridHelper(13,13,0x3fe0ff,0x3fe0ff);grid.material.transparent=true;grid.material.opacity=.25;sc.add(grid);
+function label(t){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='bold 30px sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=6;x.strokeStyle='rgba(4,18,26,.9)';x.strokeText(t,128,32);x.fillStyle='#fff';x.fillText(t,128,32);
+const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));s.scale.set(1.7,.425,1);s.renderOrder=10;return s}
+const H=d=>metric==='aqi'?d.aqi*.012:d.pm*.03;
+const bars=D.map(d=>{const m=new THREE.Mesh(new THREE.BoxGeometry(.4,1,.4),new THREE.MeshPhongMaterial({color:cat(d.aqi)[1],shininess:40}));
+m.position.x=(d.x-82)*.55;m.position.z=-(d.y-21.5)*.55;m.scale.y=.001;m.position.y=.0005;sc.add(m);
+const sp=label(d.n);sp.position.set(m.position.x,.4,m.position.z);sc.add(sp);m.userData={d:d,cur:.001,tgt:H(d),sp:sp};return m});
+if(rm)bars.forEach(b=>{b.userData.cur=b.userData.tgt});
+let theta=.35,phi=1,rad=17,auto=!rm,drag=null,moved=0;
+const place=()=>{cam.position.set(rad*Math.sin(phi)*Math.sin(theta),rad*Math.cos(phi),rad*Math.sin(phi)*Math.cos(theta));cam.lookAt(0,1,0)};
+function size(){const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();rad=w<500?21:17;place()}
+if(window.ResizeObserver)new ResizeObserver(size).observe(cv);addEventListener('resize',size);size();
+const ray=new THREE.Raycaster(),v2=new THREE.Vector2();
+function pickAt(e){const b=cv.getBoundingClientRect();v2.set((e.clientX-b.left)/b.width*2-1,-((e.clientY-b.top)/b.height*2-1));ray.setFromCamera(v2,cam);const h=ray.intersectObjects(bars);if(h.length)choose(bars.indexOf(h[0].object))}
+cv.onpointerdown=e=>{drag={x:e.clientX,y:e.clientY};moved=0;try{cv.setPointerCapture(e.pointerId)}catch(x){}cv.style.cursor='grabbing'};
+cv.onpointermove=e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.x=e.clientX;drag.y=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);theta-=dx*.008;phi=Math.min(1.45,Math.max(.35,phi-dy*.006));place()};
+cv.onpointerup=e=>{if(drag&&moved<6)pickAt(e);drag=null;cv.style.cursor='grab'};
+cv.onpointercancel=()=>{drag=null;cv.style.cursor='grab'};
+cv.onkeydown=e=>{const k=e.key;if(k==='ArrowLeft')theta-=.12;else if(k==='ArrowRight')theta+=.12;else if(k==='ArrowUp')phi=Math.max(.35,phi-.08);else if(k==='ArrowDown')phi=Math.min(1.45,phi+.08);else return;e.preventDefault();place()};
+$('#g3a').onclick=()=>{auto=!auto;$('#g3a').textContent=(auto?'⏸':'▶')+' Auto-rotate: '+(auto?'on':'off');$('#g3a').setAttribute('aria-pressed',auto)};
+if(rm){auto=false;$('#g3a').textContent='▶ Auto-rotate: off';$('#g3a').setAttribute('aria-pressed',false)}
+$('#g3r').onclick=()=>{theta=.35;phi=1;place()};
+document.querySelectorAll('.g3m').forEach(b=>b.onclick=()=>{metric=b.dataset.m;document.querySelectorAll('.g3m').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});bars.forEach(m=>{m.userData.tgt=H(m.userData.d)})});
+api={hl:k=>{bars.forEach((m,j)=>{m.material.emissive.setHex(j===k?0x444444:0);m.scale.x=m.scale.z=j===k?1.35:1})}};
+let vis=true;if(window.IntersectionObserver)new IntersectionObserver(es=>{vis=es[0].isIntersecting}).observe(cv);
+(function a(){requestAnimationFrame(a);if(!vis||document.hidden)return;
+if(auto&&!drag){theta+=.003;place()}
+bars.forEach(m=>{const u=m.userData;u.cur=rm?u.tgt:u.cur+(u.tgt-u.cur)*.08;const h=Math.max(u.cur,.001);m.scale.y=h;m.position.y=h/2;u.sp.position.y=h+.4});
+r.render(sc,cam)})();
+choose(0);
+})();
+
+/* quiz (50 questions, English + Hindi) */
+(function(){
+const Q=[{"q":["What does PM2.5 refer to?","PM2.5 किसे दर्शाता है?"],"o":[["Particles 2.5 micrometres wide or smaller","2.5 माइक्रोमीटर या उससे छोटे कण"],["Particles weighing 2.5 grams","2.5 ग्राम वज़न के कण"],["Pollution measured at 2.5 pm","दोपहर 2.5 बजे मापा गया प्रदूषण"],["Particles 2.5 millimetres wide","2.5 मिलीमीटर चौड़े कण"]],"e":["These particles are far thinner than a human hair, so they can travel deep into the lungs.","ये कण बाल से कहीं पतले होते हैं, इसलिए फेफड़ों में गहराई तक पहुँच सकते हैं।"]},{"q":["On the India CPCB scale, an AQI of 250 falls in which category?","भारत के CPCB पैमाने पर AQI 250 किस श्रेणी में आता है?"],"o":[["Poor","खराब"],["Satisfactory","संतोषजनक"],["Moderate","मध्यम"],["Severe","गंभीर"]],"e":["CPCB bands: 0–50 Good, 51–100 Satisfactory, 101–200 Moderate, 201–300 Poor, 301–400 Very poor, 401–500 Severe.","CPCB श्रेणियाँ: 0–50 अच्छा, 51–100 संतोषजनक, 101–200 मध्यम, 201–300 खराब, 301–400 बहुत खराब, 401–500 गंभीर।"]},{"q":["Which AQI range is called 'Severe' on the CPCB scale?","CPCB पैमाने पर कौन-सी AQI सीमा 'गंभीर' कहलाती है?"],"o":[["401–500","401–500"],["101–200","101–200"],["201–300","201–300"],["51–100","51–100"]],"e":["401–500 is Severe: even healthy people can be affected.","401–500 गंभीर है: स्वस्थ लोग भी प्रभावित हो सकते हैं।"]},{"q":["Which colourless, poisonous gas is produced by incomplete burning of fuel?","ईंधन के अधूरे जलने से कौन-सी रंगहीन, ज़हरीली गैस बनती है?"],"o":[["Carbon monoxide","कार्बन मोनोऑक्साइड"],["Oxygen","ऑक्सीजन"],["Nitrogen","नाइट्रोजन"],["Helium","हीलियम"]],"e":["Carbon monoxide (CO) comes from vehicles, stoves and fires with poor ventilation.","कार्बन मोनोऑक्साइड (CO) वाहनों, चूल्हों और खराब हवादार आग से निकलती है।"]},{"q":["Acid rain is mainly caused by which pair of pollutants?","अम्लीय वर्षा मुख्यतः किन प्रदूषकों से होती है?"],"o":[["Sulphur dioxide and nitrogen oxides","सल्फर डाइऑक्साइड और नाइट्रोजन ऑक्साइड"],["Argon and neon","आर्गन और नियॉन"],["Oxygen and hydrogen","ऑक्सीजन और हाइड्रोजन"],["Helium and methane","हीलियम और मीथेन"]],"e":["SO₂ and NOx react with water in the air to form acids.","SO₂ और NOx हवा में पानी से मिलकर अम्ल बनाते हैं।"]},{"q":["Which of these is a primary pollutant, released directly into the air?","इनमें से कौन-सा प्राथमिक प्रदूषक है, जो सीधे हवा में छोड़ा जाता है?"],"o":[["Sulphur dioxide","सल्फर डाइऑक्साइड"],["Ground-level ozone","भू-स्तरीय ओज़ोन"],["Photochemical smog","प्रकाश-रासायनिक धुंध"],["Peroxyacetyl nitrate (PAN)","पेरॉक्सीएसिटाइल नाइट्रेट (PAN)"]],"e":["Ozone, smog and PAN are secondary: they form later through reactions in the air.","ओज़ोन, स्मॉग और PAN द्वितीयक प्रदूषक हैं, जो बाद में हवा में अभिक्रियाओं से बनते हैं।"]},{"q":["How does harmful ground-level ozone form?","हानिकारक भू-स्तरीय ओज़ोन कैसे बनती है?"],"o":[["Nitrogen oxides and VOCs react in sunlight","नाइट्रोजन ऑक्साइड और VOC धूप में अभिक्रिया करते हैं"],["Plants release it at night","पौधे रात में इसे छोड़ते हैं"],["Ice melts in the sun","धूप में बर्फ़ पिघलती है"],["Rain mixes with soil","बारिश मिट्टी से मिलती है"]],"e":["It is a secondary pollutant and is often worst on hot, sunny days.","यह द्वितीयक प्रदूषक है और गर्म, धूप वाले दिनों में अक्सर सबसे ज़्यादा होती है।"]},{"q":["The ozone layer high in the stratosphere protects us from what?","समताप मंडल की ओज़ोन परत हमें किससे बचाती है?"],"o":[["Harmful ultraviolet radiation","हानिकारक पराबैंगनी विकिरण"],["Sound waves","ध्वनि तरंगों"],["Acid rain","अम्लीय वर्षा"],["Strong winds","तेज़ हवाओं"]],"e":["Good ozone up high shields us from UV; ozone at ground level is a pollutant.","ऊपर की ओज़ोन UV से बचाती है; ज़मीन के पास की ओज़ोन प्रदूषक है।"]},{"q":["Which group of chemicals damaged the ozone layer the most?","किन रसायनों ने ओज़ोन परत को सबसे ज़्यादा नुकसान पहुँचाया?"],"o":[["CFCs","CFC (क्लोरोफ्लोरोकार्बन)"],["Oxygen","ऑक्सीजन"],["Water vapour","जलवाष्प"],["Nitrogen","नाइट्रोजन"]],"e":["CFCs were used in old fridges, ACs and sprays.","CFC पुराने फ्रिज, AC और स्प्रे में इस्तेमाल होते थे।"]},{"q":["What is the aim of the Montreal Protocol (1987)?","मॉन्ट्रियल प्रोटोकॉल (1987) का उद्देश्य क्या है?"],"o":[["Phase out ozone-depleting substances","ओज़ोन को नष्ट करने वाले पदार्थ चरणबद्ध रूप से बंद करना"],["Ban plastic bags","प्लास्टिक थैलियों पर रोक"],["Reduce road noise","सड़क का शोर कम करना"],["Protect rivers","नदियों की रक्षा"]],"e":["It is widely seen as one of the most successful environmental agreements.","इसे सबसे सफल पर्यावरण समझौतों में गिना जाता है।"]},{"q":["The word 'smog' comes from combining which two words?","'स्मॉग' शब्द किन दो शब्दों से बना है?"],"o":[["Smoke and fog","धुआँ और कोहरा (smoke + fog)"],["Smoke and sand","धुआँ और रेत"],["Sun and fog","सूरज और कोहरा"],["Steam and ash","भाप और राख"]],"e":["Smog is a haze of smoke, fog and chemical pollutants.","स्मॉग धुएँ, कोहरे और रासायनिक प्रदूषकों की धुंध है।"]},{"q":["Which practice causes seasonal smoke spikes in north India around October–November?","अक्टूबर–नवंबर में उत्तर भारत में मौसमी धुएँ का मुख्य कारण कौन-सा तरीका है?"],"o":[["Burning crop residue (stubble)","फ़सल अवशेष (पराली) जलाना"],["Planting trees","पेड़ लगाना"],["Using solar pumps","सोलर पंप का उपयोग"],["Composting kitchen waste","रसोई का कचरा खाद बनाना"]],"e":["Straw can be reused or mixed into soil with special machines instead of being burned.","पराली को जलाने की जगह मशीनों से मिट्टी में मिलाया या दोबारा उपयोग किया जा सकता है।"]},{"q":["Why does pollution stay close to the ground on cold, still winter mornings?","सर्दी की ठंडी, शांत सुबह में प्रदूषण ज़मीन के पास क्यों रुका रहता है?"],"o":[["Temperature inversion traps polluted air near the surface","तापमान व्युत्क्रमण प्रदूषित हवा को सतह के पास रोक लेता है"],["Winds blow faster in winter","सर्दियों में हवा तेज़ चलती है"],["The Sun makes new pollutants","सूरज नए प्रदूषक बनाता है"],["Pollution is heavier than the Earth","प्रदूषण पृथ्वी से भारी होता है"]],"e":["A warm air layer above cooler air acts like a lid.","ठंडी हवा के ऊपर गर्म हवा की परत ढक्कन की तरह काम करती है।"]},{"q":["What is WHO's 2021 annual guideline for PM2.5?","PM2.5 के लिए WHO 2021 की वार्षिक मार्गदर्शी सीमा क्या है?"],"o":[["5 µg/m³","5 µg/m³"],["25 µg/m³","25 µg/m³"],["50 µg/m³","50 µg/m³"],["100 µg/m³","100 µg/m³"]],"e":["The 2021 guideline was tightened to 5 µg/m³ (annual average).","2021 में वार्षिक औसत की सीमा घटाकर 5 µg/m³ की गई।"]},{"q":["An N95 mask is designed to filter at least what share of tiny airborne particles?","N95 मास्क छोटे हवाई कणों का कम से कम कितना हिस्सा छानने के लिए बना होता है?"],"o":[["95%","95%"],["50%","50%"],["70%","70%"],["100%","100%"]],"e":["It only works well when it fits snugly on the face.","यह तभी अच्छा काम करता है जब चेहरे पर कसकर बैठे।"]},{"q":["Which gives better outdoor protection against PM2.5?","बाहर PM2.5 से बेहतर सुरक्षा कौन-सा देता है?"],"o":[["A well-fitted N95/FFP2 mask","ठीक से फिट N95/FFP2 मास्क"],["A cotton handkerchief","सूती रूमाल"],["A scarf over the mouth","मुँह पर लपेटा दुपट्टा"],["A plastic face shield","प्लास्टिक फेस शील्ड"]],"e":["Cloth and scarves let most fine particles through.","कपड़ा और दुपट्टा ज़्यादातर बारीक कणों को निकलने देते हैं।"]},{"q":["HEPA filters in air purifiers are designed to capture what?","एयर प्यूरीफायर के HEPA फ़िल्टर किसे पकड़ने के लिए बने हैं?"],"o":[["Very fine particles, including PM2.5","बहुत बारीक कण, PM2.5 सहित"],["Only the gas carbon monoxide","केवल कार्बन मोनोऑक्साइड गैस"],["Only smells","केवल गंध"],["Only large leaves","केवल बड़े पत्ते"]],"e":["True HEPA captures about 99.97% of 0.3 µm particles but does not remove gases like CO.","असली HEPA 0.3 µm के लगभग 99.97% कण पकड़ता है, पर CO जैसी गैसें नहीं हटाता।"]},{"q":["What does a catalytic converter in a car reduce?","कार का कैटेलिटिक कन्वर्टर क्या घटाता है?"],"o":[["CO, nitrogen oxides and hydrocarbons","CO, नाइट्रोजन ऑक्साइड और हाइड्रोकार्बन"],["Only engine noise","केवल इंजन का शोर"],["Tyre wear","टायर की घिसावट"],["Fuel price","ईंधन की कीमत"]],"e":["It converts harmful exhaust gases into less harmful ones.","यह हानिकारक निकास गैसों को कम हानिकारक गैसों में बदलता है।"]},{"q":["Bharat Stage (BS) norms regulate what?","भारत स्टेज (BS) मानक किसे नियंत्रित करते हैं?"],"o":[["Vehicle emissions","वाहनों का उत्सर्जन"],["Building heights","इमारतों की ऊँचाई"],["Water quality","पानी की गुणवत्ता"],["School timetables","स्कूल का समय"]],"e":["BS-VI fuel and vehicle norms came into force across India in April 2020.","BS-VI ईंधन और वाहन मानक अप्रैल 2020 से पूरे भारत में लागू हुए।"]},{"q":["The National Clean Air Programme (NCAP), launched in 2019, aims to do what?","2019 में शुरू राष्ट्रीय स्वच्छ वायु कार्यक्रम (NCAP) का लक्ष्य क्या है?"],"o":[["Reduce PM2.5 and PM10 levels in cities","शहरों में PM2.5 और PM10 का स्तर घटाना"],["Build more highways","अधिक राजमार्ग बनाना"],["Ban all vehicles","सभी वाहनों पर रोक"],["Increase coal use","कोयले का उपयोग बढ़ाना"]],"e":["NCAP targets cut-downs in particulate pollution in selected cities.","NCAP चुने हुए शहरों में कण प्रदूषण घटाने का लक्ष्य रखता है।"]},{"q":["What does CPCB stand for?","CPCB का पूरा नाम क्या है?"],"o":[["Central Pollution Control Board","केंद्रीय प्रदूषण नियंत्रण बोर्ड"],["Central Public Control Bureau","केंद्रीय सार्वजनिक नियंत्रण ब्यूरो"],["Climate Pollution Council Board","जलवायु प्रदूषण परिषद बोर्ड"],["Central Plant Care Board","केंद्रीय पौध देखभाल बोर्ड"]],"e":["CPCB publishes India's national AQI.","CPCB भारत का राष्ट्रीय AQI प्रकाशित करता है।"]},{"q":["Which gas leaked in the 1984 Bhopal gas tragedy?","1984 की भोपाल गैस त्रासदी में कौन-सी गैस रिसी थी?"],"o":[["Methyl isocyanate (MIC)","मिथाइल आइसोसायनेट (MIC)"],["Chlorine","क्लोरीन"],["Carbon dioxide","कार्बन डाइऑक्साइड"],["Hydrogen","हाइड्रोजन"]],"e":["It remains one of the world's worst industrial disasters.","यह दुनिया की सबसे बुरी औद्योगिक दुर्घटनाओं में से एक है।"]},{"q":["National Pollution Control Day in India is observed on which date?","भारत में राष्ट्रीय प्रदूषण नियंत्रण दिवस किस तारीख़ को मनाया जाता है?"],"o":[["2 December","2 दिसंबर"],["5 June","5 जून"],["22 April","22 अप्रैल"],["26 January","26 जनवरी"]],"e":["It remembers the victims of the Bhopal gas tragedy.","यह भोपाल गैस त्रासदी के पीड़ितों की याद में मनाया जाता है।"]},{"q":["The International Day of Clean Air for blue skies is observed on:","अंतर्राष्ट्रीय नीले आसमान के लिए स्वच्छ वायु दिवस कब मनाया जाता है?"],"o":[["7 September","7 सितंबर"],["2 December","2 दिसंबर"],["5 June","5 जून"],["22 April","22 अप्रैल"]],"e":["It was established by the United Nations in 2019.","इसे संयुक्त राष्ट्र ने 2019 में शुरू किया।"]},{"q":["The Great Smog of London (1952) was mainly linked to what?","लंदन के महा-स्मॉग (1952) का मुख्य संबंध किससे था?"],"o":[["Burning coal for heating and industry","हीटिंग और उद्योग के लिए कोयला जलाना"],["A volcanic eruption","ज्वालामुखी विस्फोट"],["A forest fire","जंगल की आग"],["Fireworks","आतिशबाज़ी"]],"e":["It led to the UK's Clean Air Act of 1956.","इसके बाद ब्रिटेन में 1956 का स्वच्छ वायु कानून बना।"]},{"q":["Which household activity most increases indoor smoke and PM2.5?","कौन-सी घरेलू गतिविधि घर के अंदर धुआँ और PM2.5 सबसे ज़्यादा बढ़ाती है?"],"o":[["Cooking on a wood or dung chulha","लकड़ी या उपले के चूल्हे पर खाना बनाना"],["Using an induction cooktop","इंडक्शन पर खाना बनाना"],["Cooking on LPG","LPG पर खाना बनाना"],["Using a ceiling fan","सीलिंग फ़ैन चलाना"]],"e":["Clean fuels and good ventilation protect especially women and children.","साफ़ ईंधन और अच्छी हवा खासकर महिलाओं और बच्चों को बचाते हैं।"]},{"q":["What does the PM Ujjwala Yojana provide?","प्रधानमंत्री उज्ज्वला योजना क्या उपलब्ध कराती है?"],"o":[["LPG connections for cleaner cooking","साफ़ खाना पकाने के लिए LPG कनेक्शन"],["Free electric cars","मुफ़्त इलेक्ट्रिक कारें"],["Free mobile phones","मुफ़्त मोबाइल फ़ोन"],["Free bicycles","मुफ़्त साइकिलें"]],"e":["It aims to cut smoke from traditional fuels in homes.","इसका उद्देश्य घरों में पारंपरिक ईंधन से निकलने वाला धुआँ घटाना है।"]},{"q":["Why is carbon monoxide dangerous to breathe?","कार्बन मोनोऑक्साइड साँस में लेना खतरनाक क्यों है?"],"o":[["It binds to haemoglobin and cuts oxygen carried by blood","यह हीमोग्लोबिन से जुड़कर रक्त की ऑक्सीजन ढोने की क्षमता घटाती है"],["It makes bones soft","यह हड्डियों को नरम करती है"],["It stops digestion","यह पाचन रोक देती है"],["It freezes the lungs","यह फेफड़ों को जमा देती है"]],"e":["Never run engines or burn charcoal in closed rooms.","बंद कमरों में इंजन न चलाएँ और कोयला न जलाएँ।"]},{"q":["Who is most vulnerable to air pollution?","वायु प्रदूषण से सबसे ज़्यादा जोखिम किसे होता है?"],"o":[["Children, older adults and people with heart or lung disease","बच्चे, बुज़ुर्ग और हृदय या फेफड़ों के रोगी"],["Only healthy young adults","केवल स्वस्थ युवा"],["Nobody is affected","किसी पर असर नहीं पड़ता"],["Only people living near forests","केवल जंगल के पास रहने वाले"]],"e":["Everyone can be affected, but these groups face higher risk.","असर सब पर पड़ सकता है, पर इन समूहों में जोखिम ज़्यादा है।"]},{"q":["Long-term exposure to PM2.5 is linked to which health problems?","PM2.5 के लंबे समय तक संपर्क का संबंध किन समस्याओं से है?"],"o":[["Heart and lung disease","हृदय और फेफड़ों के रोग"],["Better eyesight","बेहतर नज़र"],["Taller height","लंबी कद-काठी"],["Stronger bones","मज़बूत हड्डियाँ"]],"e":["Fine particles can enter the bloodstream.","बारीक कण रक्त प्रवाह में पहुँच सकते हैं।"]},{"q":["Which organisms are used as natural indicators of air pollution such as SO₂?","SO₂ जैसे वायु प्रदूषण के प्राकृतिक संकेतक के रूप में कौन-से जीव उपयोग होते हैं?"],"o":[["Lichens","लाइकेन (शैक)"],["Sharks","शार्क"],["Camels","ऊँट"],["Corals","मूँगा"]],"e":["Many lichens are sensitive to sulphur dioxide and disappear in polluted places.","कई लाइकेन सल्फर डाइऑक्साइड के प्रति संवेदनशील होते हैं और प्रदूषित जगहों से गायब हो जाते हैं।"]},{"q":["How do trees help clean the air?","पेड़ हवा को साफ़ करने में कैसे मदद करते हैं?"],"o":[["Absorb CO₂, trap dust and release oxygen","CO₂ सोखते हैं, धूल रोकते हैं और ऑक्सीजन छोड़ते हैं"],["Release carbon monoxide","कार्बन मोनोऑक्साइड छोड़ते हैं"],["Make more nitrogen oxides","अधिक नाइट्रोजन ऑक्साइड बनाते हैं"],["Release sulphur","सल्फर छोड़ते हैं"]],"e":["Trees help, but they cannot replace cutting emissions.","पेड़ मदद करते हैं, पर उत्सर्जन घटाने का विकल्प नहीं हैं।"]},{"q":["Which energy source gives no air pollution while generating power?","बिजली बनाते समय कौन-सा ऊर्जा स्रोत वायु प्रदूषण नहीं करता?"],"o":[["Solar power","सौर ऊर्जा"],["Coal","कोयला"],["Diesel generator","डीज़ल जनरेटर"],["Burning wood","लकड़ी जलाना"]],"e":["Rooftop solar reduces demand for coal-based electricity.","छत पर सोलर कोयला-आधारित बिजली की मांग घटाता है।"]},{"q":["Coal-fired power plants are a major source of which pollutants?","कोयला-आधारित बिजलीघर किन प्रदूषकों का प्रमुख स्रोत हैं?"],"o":[["Sulphur dioxide and particulates","सल्फर डाइऑक्साइड और कण"],["Only pure oxygen","केवल शुद्ध ऑक्सीजन"],["Only water vapour","केवल जलवाष्प"],["Only helium","केवल हीलियम"]],"e":["Scrubbers and filters can cut these emissions.","स्क्रबर और फ़िल्टर इन उत्सर्जनों को घटा सकते हैं।"]},{"q":["What does burning plastic release?","प्लास्टिक जलाने से क्या निकलता है?"],"o":[["Toxic gases such as dioxins","डाइऑक्सिन जैसी ज़हरीली गैसें"],["Clean oxygen","साफ़ ऑक्सीजन"],["Fresh water","ताज़ा पानी"],["Harmless steam","हानिरहित भाप"]],"e":["Never burn plastic or mixed waste.","प्लास्टिक या मिला हुआ कचरा कभी न जलाएँ।"]},{"q":["What is a better option than burning dry leaves and household waste?","सूखी पत्तियाँ और घरेलू कचरा जलाने की जगह बेहतर विकल्प क्या है?"],"o":[["Segregate it and compost wet waste","अलग-अलग करके गीले कचरे की खाद बनाना"],["Burn it at night","रात में जलाना"],["Burn it with plastic","प्लास्टिक के साथ जलाना"],["Burn it in small piles","छोटे ढेरों में जलाना"]],"e":["Open burning releases smoke and toxic gases at any time of day.","खुले में जलाने से दिन के किसी भी समय धुआँ और ज़हरीली गैसें निकलती हैं।"]},{"q":["What happens to air quality around heavy fireworks?","भारी आतिशबाज़ी के आसपास हवा की गुणवत्ता का क्या होता है?"],"o":[["Particle levels (PM2.5/PM10) spike sharply","कणों (PM2.5/PM10) का स्तर तेज़ी से बढ़ता है"],["AQI improves","AQI सुधरता है"],["The ozone layer is repaired","ओज़ोन परत ठीक होती है"],["The air becomes purer","हवा शुद्ध हो जाती है"]],"e":["Fireworks release smoke, fine particles and metals.","आतिशबाज़ी धुआँ, बारीक कण और धातुएँ छोड़ती है।"]},{"q":["A fully electric vehicle produces what at the tailpipe?","पूरी तरह इलेक्ट्रिक वाहन टेलपाइप से क्या छोड़ता है?"],"o":[["No exhaust emissions","कोई निकास उत्सर्जन नहीं"],["More carbon monoxide","अधिक कार्बन मोनोऑक्साइड"],["More sulphur dioxide","अधिक सल्फर डाइऑक्साइड"],["Black smoke","काला धुआँ"]],"e":["Total impact still depends on how the electricity is generated.","कुल असर इस पर भी निर्भर है कि बिजली कैसे बनती है।"]},{"q":["Why do construction sites spray water?","निर्माण स्थलों पर पानी का छिड़काव क्यों किया जाता है?"],"o":[["To settle dust","धूल बैठाने के लिए"],["To create smog","स्मॉग बनाने के लिए"],["To make noise","शोर करने के लिए"],["To cause acid rain","अम्लीय वर्षा के लिए"]],"e":["Covering materials and screening debris also help.","सामग्री ढकना और मलबे पर जाली लगाना भी मदद करता है।"]},{"q":["In which unit is particulate matter usually measured?","कणीय पदार्थ (PM) आमतौर पर किस इकाई में मापा जाता है?"],"o":[["Micrograms per cubic metre (µg/m³)","माइक्रोग्राम प्रति घन मीटर (µg/m³)"],["Kilograms per hour","किलोग्राम प्रति घंटा"],["Litres per second","लीटर प्रति सेकंड"],["Decibels","डेसिबल"]],"e":["Decibels measure sound, not air quality.","डेसिबल ध्वनि मापता है, वायु गुणवत्ता नहीं।"]},{"q":["Which colour is used for 'Severe' on the CPCB AQI scale?","CPCB AQI पैमाने पर 'गंभीर' के लिए कौन-सा रंग उपयोग होता है?"],"o":[["Maroon (dark red)","मरून (गहरा लाल)"],["Green","हरा"],["Yellow","पीला"],["Blue","नीला"]],"e":["Green is good, yellow moderate, orange poor, red very poor, maroon severe.","हरा अच्छा, पीला मध्यम, नारंगी खराब, लाल बहुत खराब, मरून गंभीर।"]},{"q":["On a 'very poor' AQI day, what is the best action?","'बहुत खराब' AQI वाले दिन सबसे अच्छा कदम क्या है?"],"o":[["Avoid outdoor exercise and wear an N95 if you must go out","बाहर व्यायाम से बचें और जाना ज़रूरी हो तो N95 पहनें"],["Go for a long jog outside","बाहर लंबी दौड़ लगाएँ"],["Open all windows all day","दिन भर सारी खिड़कियाँ खोलें"],["Play sports in the park","पार्क में खेलें"]],"e":["Heavy exertion makes you breathe in more pollutants.","भारी मेहनत से आप ज़्यादा प्रदूषक साँस में लेते हैं।"]},{"q":["How does carpooling or taking the bus help?","कारपूल या बस लेने से क्या फ़ायदा होता है?"],"o":[["Fewer vehicles and lower emissions per person","कम वाहन और प्रति व्यक्ति कम उत्सर्जन"],["It only adds noise","केवल शोर बढ़ता है"],["It has no effect","कोई असर नहीं"],["It makes roads dirtier","सड़कें ज़्यादा गंदी होती हैं"]],"e":["Shared and public transport cuts traffic and pollution.","साझा और सार्वजनिक परिवहन ट्रैफ़िक और प्रदूषण घटाता है।"]},{"q":["What does AQI stand for?","AQI का पूरा नाम क्या है?"],"o":[["Air Quality Index","वायु गुणवत्ता सूचकांक (Air Quality Index)"],["Air Quantity Indicator","वायु मात्रा संकेतक"],["Atmospheric Quality Inventory","वायुमंडलीय गुणवत्ता सूची"],["Annual Quality Index","वार्षिक गुणवत्ता सूचकांक"]],"e":["AQI turns several pollutant levels into one simple number.","AQI कई प्रदूषकों के स्तर को एक सरल संख्या में बदलता है।"]},{"q":["Which gas is the main greenhouse gas from burning fossil fuels?","जीवाश्म ईंधन जलाने से निकलने वाली मुख्य ग्रीनहाउस गैस कौन-सी है?"],"o":[["Carbon dioxide","कार्बन डाइऑक्साइड"],["Argon","आर्गन"],["Neon","नियॉन"],["Helium","हीलियम"]],"e":["CO₂ warms the climate, even though it is not a toxic air pollutant.","CO₂ जलवायु को गर्म करती है, भले ही वह ज़हरीला वायु प्रदूषक नहीं है।"]},{"q":["According to WHO (2022), roughly what share of people breathe air above WHO guideline limits?","WHO (2022) के अनुसार, लगभग कितने लोग WHO की सीमा से ऊपर प्रदूषित हवा में साँस लेते हैं?"],"o":[["About 99%","लगभग 99%"],["About 10%","लगभग 10%"],["About 25%","लगभग 25%"],["About 50%","लगभग 50%"]],"e":["Almost the entire world population is affected to some degree.","लगभग पूरी दुनिया की आबादी किसी हद तक प्रभावित है।"]},{"q":["WHO estimates air pollution contributes to roughly how many premature deaths a year?","WHO के अनुमान से वायु प्रदूषण हर साल लगभग कितनी असामयिक मौतों में योगदान देता है?"],"o":[["About 7 million","लगभग 70 लाख"],["About 7,000","लगभग 7,000"],["About 70,000","लगभग 70,000"],["About 700","लगभग 700"]],"e":["This covers both outdoor (ambient) and household air pollution; it is a modelled estimate.","इसमें बाहरी और घरेलू वायु प्रदूषण दोनों शामिल हैं; यह मॉडल आधारित अनुमान है।"]},{"q":["How does rain help improve air quality?","बारिश हवा की गुणवत्ता सुधारने में कैसे मदद करती है?"],"o":[["It washes pollutants out of the air","यह हवा से प्रदूषकों को धो देती है"],["It creates more particles","यह और कण बनाती है"],["It adds smoke","यह धुआँ जोड़ती है"],["It has no effect","कोई असर नहीं"]],"e":["Improvement is often temporary if emissions continue.","उत्सर्जन जारी रहे तो सुधार अक्सर अस्थायी होता है।"]},{"q":["Why is switching off the engine at a long red light helpful?","लंबी लाल बत्ती पर इंजन बंद करना क्यों फ़ायदेमंद है?"],"o":[["It saves fuel and cuts exhaust","इससे ईंधन बचता है और धुआँ घटता है"],["It heats the road","इससे सड़क गर्म होती है"],["It makes the engine louder","इससे इंजन ज़्यादा शोर करता है"],["It has no effect","कोई असर नहीं"]],"e":["Idling burns fuel while going nowhere.","इंजन चालू रखने से बिना चले ईंधन जलता है।"]},{"q":["What does a PUC certificate show about a vehicle?","PUC प्रमाणपत्र वाहन के बारे में क्या दिखाता है?"],"o":[["Its exhaust emissions are within limits","इसका निकास उत्सर्जन सीमा के भीतर है"],["Its insurance is valid","इसका बीमा वैध है"],["The driver's age","चालक की उम्र"],["Its tyre pressure","टायर का दबाव"]],"e":["PUC means Pollution Under Control, and it must be renewed regularly.","PUC का अर्थ है 'पॉल्यूशन अंडर कंट्रोल'; इसे नियमित रूप से नवीनीकृत कराना होता है।"]}];
+const T={
+en:{h:'Air pollution quiz',note:'Test what you know. 50 questions in English and हिन्दी. For learning and awareness only.',nl:'Number of questions',start:'Start quiz',next:'Next',fin:'See result',prog:(i,n)=>'Question '+i+' of '+n,ok:'Correct!',no:'Not quite. Correct answer: ',score:(s,n)=>'You scored '+s+' / '+n,best:b=>b==null?'':'Best score on this device: '+b+'%',again:'Play again',msg:p=>p>=80?'Excellent! You are an air-quality champion.':p>=50?'Good effort! Review the explanations and try again.':'Keep learning! Ask Manish or read the sections above, then retry.'},
+hi:{h:'वायु प्रदूषण प्रश्नोत्तरी',note:'अपनी जानकारी परखें। English और हिन्दी में 50 प्रश्न। केवल सीखने और जागरूकता के लिए।',nl:'प्रश्नों की संख्या',start:'क्विज़ शुरू करें',next:'अगला',fin:'परिणाम देखें',prog:(i,n)=>'प्रश्न '+i+' / '+n,ok:'सही!',no:'सही नहीं। सही उत्तर: ',score:(s,n)=>'आपका स्कोर '+s+' / '+n,best:b=>b==null?'':'इस डिवाइस पर सर्वश्रेष्ठ स्कोर: '+b+'%',again:'फिर से खेलें',msg:p=>p>=80?'शानदार! आप वायु-गुणवत्ता के चैंपियन हैं।':p>=50?'अच्छा प्रयास! स्पष्टीकरण पढ़ें और फिर कोशिश करें।':'सीखते रहें! मनीष से पूछें या ऊपर के भाग पढ़ें, फिर दोबारा कोशिश करें।'}
+};
+let L='en',order=[],i=0,score=0,perm=[],ans=null;
+const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const bestGet=()=>{const b=sg('ag-quizbest');return typeof b==='number'?b:null};
+function labels(){const t=T[L];$('#quiz').lang=L==='hi'?'hi':'en';$('#qh').textContent=t.h;$('#qnote').textContent=t.note;$('#qnl').textContent=t.nl;$('#qstart').textContent=t.start;$('#qbest').textContent=t.best(bestGet());
+document.querySelectorAll('.qlb').forEach(b=>{const on=b.dataset.l===L;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+function render(){const t=T[L],q=Q[order[i]];$('#qprog').textContent=t.prog(i+1,order.length);$('#qbar').style.width=(i/order.length*100)+'%';$('#qtext').textContent=q.q[L==='hi'?1:0];
+const li=L==='hi'?1:0,box=$('#qopts');box.innerHTML='';
+perm.forEach(j=>{const b=document.createElement('button');b.type='button';b.className='qo';b.textContent=q.o[j][li];
+if(ans!==null){b.disabled=true;if(j===0)b.classList.add('ok');else if(j===ans)b.classList.add('no')}else b.onclick=()=>pick(j);box.append(b)});
+const fb=$('#qfb'),nx=$('#qnext');
+if(ans!==null){fb.textContent=(ans===0?t.ok:t.no+q.o[0][li])+' '+q.e[li];nx.style.display='inline-block';nx.textContent=i+1>=order.length?t.fin:t.next}else{fb.textContent='';nx.style.display='none'}}
+function pick(j){if(ans!==null)return;ans=j;if(j===0)score++;render();$('#qnext').focus()}
+function load(){ans=null;perm=sh([0,1,2,3]);render()}
+function finish(){const t=T[L],n=order.length,p=Math.round(score/n*100),b=bestGet();if(b==null||p>b)sg('ag-quizbest',p);
+$('#qplay').style.display='none';const r=$('#qres');r.style.display='block';r.innerHTML='';
+const h=document.createElement('h3');h.textContent=t.score(score,n)+' ('+p+'%)';const m=document.createElement('p');m.textContent=t.msg(p);
+const bb=document.createElement('button');bb.type='button';bb.className='pri';bb.textContent=t.again;bb.onclick=()=>{r.style.display='none';$('#qsetup').style.display='block';labels();$('#quiz').scrollIntoView({behavior:rm?'auto':'smooth'})};
+r.append(h,m,bb);labels()}
+$('#qstart').onclick=()=>{const n=Math.min(+$('#qn').value||10,Q.length);order=sh(Q.map((_,k)=>k)).slice(0,n);i=0;score=0;
+$('#qsetup').style.display='none';$('#qres').style.display='none';$('#qplay').style.display='block';load()};
+$('#qnext').onclick=()=>{i++;if(i>=order.length)finish();else load()};
+document.querySelectorAll('.qlb').forEach(b=>b.onclick=()=>{L=b.dataset.l;labels();if($('#qplay').style.display!=='none')render();if($('#qres').style.display!=='none')finish()});
+labels();
+})();
+</script>
+</body>
+</html>
